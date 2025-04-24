@@ -21,7 +21,7 @@ public class LanguageSelectionScreen extends  Game implements Screen, InputProce
 
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\untitled\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
         Label titleLabel = new Label("Select Language", skin);
         titleLabel.setFontScale(2);
         titleLabel.setAlignment(Align.center);

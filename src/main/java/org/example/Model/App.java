@@ -3,16 +3,12 @@ package org.example.Model;
 import org.example.view.*;
 
 public class App {
-    public String[] avatarPaths = new String[7];
     public static Menu currentMenu;
     public org.example.view.Menu[] menus = new org.example.view.Menu[9];
     public static int languageNumber = 0;
     public static User currentUser = null;
 
     public App() {
-        for (int i = 0; i < 7; i++) {
-            this.avatarPaths[i] = "\"C:\\Users\\ASUS\\Desktop\\project assets\\avatars\\avatar" + (i + 1) + ".jpg\"";
-        }
         menus[Menu.REGISTER_MENU.value] = new StartMenu();
         menus[Menu.EXIT_MENU.value] = new ExitMenu();
         menus[Menu.LOGIN_MENU.value] = new LoginMenu();
@@ -27,6 +23,6 @@ public class App {
 
     public static String getAvatarPath() {
         int randomIndex = (int) (Math.random() * 7);
-        return "C:\\Users\\ASUS\\IdeaProjects\\untitled\\src\\main\\java\\org\\example\\view\\project assets\\avatars\\avatar" + (randomIndex + 1) + ".jpg";
+        return "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\avatars\\avatar" + (randomIndex + 1) + ".jpg";
     }
 }
