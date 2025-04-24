@@ -32,8 +32,8 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
         stage.addActor(table);
         stage.setKeyboardFocus(usernameField);
         InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(stage);
         multiplexer.addProcessor(this);
+        multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
     }
 
@@ -61,15 +61,16 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
         usernameField.setAlignment(Align.center);
         passwordField = new TextField("", skin);
         passwordField.setMessageText("Type your password...");
-        passwordField.setPasswordMode(true);
-        passwordField.setPasswordCharacter('*');
         passwordField.setVisible(false);
+        passwordField.setAlignment(Align.center);
         questionField = new TextField("", skin);
         questionField.setMessageText("Enter a security question...");
         questionField.setVisible(false);
+        questionField.setAlignment(Align.center);
         answerField = new TextField("", skin);
         answerField.setMessageText("Answer your security question...");
         answerField.setVisible(false);
+        answerField.setAlignment(Align.center);
         usernameField.setTouchable(Touchable.enabled);
         passwordField.setTouchable(Touchable.enabled);
         questionField.setTouchable(Touchable.enabled);
@@ -81,7 +82,7 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
         if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 String username = usernameField.getText();
-                Response usernameResponse = null;
+                Response usernameResponse;
                 try {
                     usernameResponse = RegisterMenuController.checkUsername(username);
                 } catch (SQLException e) {
@@ -135,7 +136,7 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginMenu());
             }
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -145,7 +146,6 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
 
     @Override
     public boolean keyTyped(char c) {
-        System.out.println(c);
         return false;
     }
 
