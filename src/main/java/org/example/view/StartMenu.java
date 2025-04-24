@@ -11,10 +11,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
 import org.example.Model.Language;
 
+
 public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
     private Stage stage;
     private Skin skin;
-    private TextButton registerButton, exitButton;
+    private TextButton registerButton, loginButton, guestButton, exitButton;
     private int selectedIndex = 0;
     private Texture backgroundTexture;
     private Image backgroundImage;
@@ -27,6 +28,8 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
         registerButton = new TextButton(Language.REGISTER.languages[App.languageNumber], skin);
+        loginButton = new TextButton(Language.LOGIN.languages[App.languageNumber], skin);
+        guestButton = new TextButton(Language.PLAY_AS_GUEST.languages[App.languageNumber], skin);
         exitButton = new TextButton(Language.EXIT.languages[App.languageNumber], skin);
         Table messageTable = writeMyName();
         Table table = createButtons();
@@ -47,6 +50,10 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
         table.center();
         table.add(registerButton).size(200, 50).pad(10);
         table.row();
+        table.add(loginButton).size(200, 50).pad(10);
+        table.row();
+        table.add(guestButton).size(200, 50).pad(10);
+        table.row();
         table.add(exitButton).size(200, 50).pad(10);
         return table;
     }
@@ -65,21 +72,26 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
         return messageTable;
     }
 
-
     private void updateSelection() {
         registerButton.setColor(selectedIndex == 0 ? Color.RED : Color.WHITE);
-        exitButton.setColor(selectedIndex == 1 ? Color.RED : Color.WHITE);
+        loginButton.setColor(selectedIndex == 1 ? Color.RED : Color.WHITE);
+        guestButton.setColor(selectedIndex == 2 ? Color.RED : Color.WHITE);
+        exitButton.setColor(selectedIndex == 3 ? Color.RED : Color.WHITE);
     }
 
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.DOWN) {
-            selectedIndex = (selectedIndex + 1) % 2;
+            selectedIndex = (selectedIndex + 1) % 4;
         } else if (keycode == Input.Keys.UP) {
-            selectedIndex = (selectedIndex - 1 + 2) % 2;
+            selectedIndex = (selectedIndex - 1 + 4) % 4;
         } else if (keycode == Input.Keys.ENTER) {
             if (selectedIndex == 0) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new RegisterMenu());
+            } else if (selectedIndex == 1) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginMenu());
+            } else if (selectedIndex == 2) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameMenu());
             } else {
                 System.exit(0);
             }
@@ -111,12 +123,10 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
     }
 
     @Override
-    public void pause() {
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-    }
+    public void resume() {}
 
     @Override
     public void hide() {

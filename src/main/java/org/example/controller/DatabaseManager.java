@@ -6,17 +6,18 @@ import java.sql.*;
 
 public class DatabaseManager {
     public static Connection connect() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:users.db");
+        return DriverManager.getConnection( "jdbc:sqlite:C:/Users/ASUS/users.db");
     }
 
     public static User getUser(String username) throws SQLException {
         String sql = "SELECT * FROM users WHERE username = ?";
 
+        Connection con = DatabaseManager.connect();
         try (Connection conn = DatabaseManager.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement prepareStatement = conn.prepareStatement(sql)) {
 
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
+            prepareStatement.setString(1, username);
+            ResultSet rs = prepareStatement.executeQuery();
 
             if (rs.next()) {
                 return new User(
@@ -24,7 +25,10 @@ public class DatabaseManager {
                         rs.getString("password"),
                         rs.getString("question"),
                         rs.getString("answer"),
-                        rs.getString("avatarPath")
+                        rs.getString("avatarPath"),
+                        rs.getInt("score"),
+                        rs.getInt("survivalTime"),
+                        rs.getInt("totalKills")
                 );
             } else {
                 return null;
@@ -35,14 +39,17 @@ public class DatabaseManager {
     }
 
     public static void saveUser(User user) throws SQLException {
-        String sql = "INSERT INTO users (username, password, question, answer, avatarPath) VALUES (?, ?, ?, ?, ?)";
         Connection conn = DatabaseManager.connect();
+        String sql = "INSERT INTO users (username, password, question, answer, avatarPath, score, survivalTime, totalKills) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement prepareStatement = conn.prepareStatement(sql);
         prepareStatement.setString(1, user.username);
         prepareStatement.setString(2, user.password);
         prepareStatement.setString(3, user.question);
         prepareStatement.setString(4, user.answer);
         prepareStatement.setString(5, user.avatarPath);
+        prepareStatement.setInt(6, user.score);
+        prepareStatement.setInt(7, user.survivalTime);
+        prepareStatement.setInt(8, user.totalKills);
         prepareStatement.executeUpdate();
     }
 }

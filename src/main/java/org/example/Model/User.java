@@ -10,13 +10,19 @@ public class User {
     public String answer;
     public Texture texture;
     public String avatarPath;
+    public int score;
+    public int survivalTime;
+    public int totalKills;
 
-    public User(String username, String password, String question, String answer, String avatarPath) {
+    public User(String username, String password, String question, String answer, String avatarPath, int score, int survivalTime, int totalKills) {
         this.username = username;
         this.password = password;
         this.question = question;
         this.answer = answer;
         this.avatarPath = avatarPath;
         texture = new Texture(Gdx.files.internal(avatarPath));
+        this.score = 0;
+        this.survivalTime = survivalTime;
+        this.totalKills = totalKills;
     }
 }

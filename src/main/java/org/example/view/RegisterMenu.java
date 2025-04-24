@@ -1,40 +1,50 @@
 package org.example.view;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.Model.Language;
 import org.example.Model.Response;
 import org.example.Model.User;
 import org.example.controller.DatabaseManager;
 import org.example.controller.RegisterMenuController;
 
 import java.sql.SQLException;
+
 public class RegisterMenu implements Menu, Screen, InputProcessor {
     private Stage stage;
     private Skin skin;
     private TextField usernameField, passwordField, questionField, answerField;
     private Label messageLabel;
     private int index = 0;
+    private Texture backgroundTexture;
+    private Image backgroundImage;
 
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\untitled\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
         createFields();
         Table table = createTable();
-        stage.addActor(table);
-        stage.setKeyboardFocus(usernameField);
+        createStage(table);
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(this);
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
+    }
+
+    private void createStage(Table table) {
+        backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\untitled\\src\\main\\java\\org\\example\\view\\project assets\\registerMenu.png"));
+        backgroundImage = new Image(backgroundTexture);
+        backgroundImage.setFillParent(true);
+        stage.addActor(backgroundImage);
+        stage.addActor(table);
+        stage.setKeyboardFocus(usernameField);
     }
 
     private Table createTable() {
@@ -54,21 +64,20 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
     }
 
     private void createFields() {
-        messageLabel = new Label("Enter your username:", skin);
+        messageLabel = new Label(Language.ENTER_YOUR_USERNAME.languages[App.languageNumber], skin);
         messageLabel.setFontScale(2);
         usernameField = new TextField("", skin);
-        usernameField.setMessageText("Type your username...");
         usernameField.setAlignment(Align.center);
         passwordField = new TextField("", skin);
-        passwordField.setMessageText("Type your password...");
+        passwordField.setMessageText(Language.TYPE_YOUR_PASSWORD.languages[App.languageNumber]);
         passwordField.setVisible(false);
         passwordField.setAlignment(Align.center);
         questionField = new TextField("", skin);
-        questionField.setMessageText("Enter a security question...");
+        questionField.setMessageText(Language.ENTER_YOUR_SECURITY_QUESTION.languages[App.languageNumber]);
         questionField.setVisible(false);
         questionField.setAlignment(Align.center);
         answerField = new TextField("", skin);
-        answerField.setMessageText("Answer your security question...");
+        answerField.setMessageText(Language.ANSWER_YOUR_SECURITY_QUESTION.languages[App.languageNumber]);
         answerField.setVisible(false);
         answerField.setAlignment(Align.center);
         usernameField.setTouchable(Touchable.enabled);
@@ -79,6 +88,8 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.ESCAPE)
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
         if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 String username = usernameField.getText();
@@ -91,7 +102,7 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
                 if (!usernameResponse.success) {
                     messageLabel.setText(usernameResponse.responseMessage);
                 } else {
-                    messageLabel.setText("Now enter your password.");
+                    messageLabel.setText(Language.TYPE_YOUR_PASSWORD.languages[App.languageNumber]);
                     usernameField.setVisible(false);
                     passwordField.setVisible(true);
                     stage.setKeyboardFocus(passwordField);
@@ -103,7 +114,7 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
                 if (!passwordResponse.success) {
                     messageLabel.setText(passwordResponse.responseMessage);
                 } else {
-                    messageLabel.setText("Enter your security question.");
+                    messageLabel.setText(Language.ENTER_YOUR_SECURITY_QUESTION.languages[App.languageNumber]);
                     passwordField.setVisible(false);
                     questionField.setVisible(true);
                     stage.setKeyboardFocus(questionField);
@@ -112,9 +123,9 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
             } else if (index == 2) {
                 String question = questionField.getText();
                 if (question.isEmpty()) {
-                    messageLabel.setText("Security question cannot be empty!");
+                    messageLabel.setText(Language.ENTER_YOUR_SECURITY_QUESTION.languages[App.languageNumber]);
                 } else {
-                    messageLabel.setText("Now enter your answer.");
+                    messageLabel.setText(Language.ANSWER_YOUR_SECURITY_QUESTION.languages[App.languageNumber]);
                     questionField.setVisible(false);
                     answerField.setVisible(true);
                     stage.setKeyboardFocus(answerField);
@@ -125,15 +136,15 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
                 String password = passwordField.getText();
                 String question = questionField.getText();
                 String answer = answerField.getText();
-                User user = new User(username, password, question, answer, "");
+                User user = new User(username, password, question, answer, App.getAvatarPath(), 0, 0, 0);
                 try {
                     DatabaseManager.saveUser(user);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-                messageLabel.setText("Registration complete!");
+                messageLabel.setText(Language.REGISTERED_SUCCESSFULLY.languages[App.languageNumber]);
                 App.currentUser = user;
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginMenu());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         }
         return false;
