@@ -9,16 +9,7 @@ public class App {
     public static User currentUser = null;
 
     public App() {
-        menus[Menu.REGISTER_MENU.value] = new StartMenu();
-        menus[Menu.EXIT_MENU.value] = new ExitMenu();
-        menus[Menu.LOGIN_MENU.value] = new LoginMenu();
-        menus[Menu.PROFILE_MENU.value] = new ProfileMenu();
-        menus[Menu.SETTINGS_MENU.value] = new SettingsMenu();
-        menus[Menu.MAIN_MENU.value] = new MainMenu();
-        menus[Menu.GAME_MENU.value] = new GameMenu();
-        menus[Menu.PRE_GAME_MENU.value] = new PreGameMenu();
-        menus[Menu.SCOREBOARD_MENU.value] = new ScoreboardMenu();
-        currentMenu = Menu.REGISTER_MENU;
+
     }
 
     public static String getAvatarPath() {

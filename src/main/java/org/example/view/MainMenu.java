@@ -8,12 +8,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.controller.DatabaseManager;
+
+import java.sql.SQLException;
 
 public class MainMenu extends Game implements Menu, Screen, InputProcessor {
     private Stage stage;
     private Skin skin;
     private TextButton preGameButton, settingsButton, profileButton, scoreboardButton, hintButton, continueButton, exitButton;
-    private int selectedIndex = 0;
+    private int index = 0;
     private Texture backgroundTexture;
     private Image backgroundImage;
     private Image avatarImage;
@@ -87,35 +90,40 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
     }
 
     private void updateSelection() {
-        preGameButton.setColor(selectedIndex == 0 ? Color.RED : Color.WHITE);
-        settingsButton.setColor(selectedIndex == 1 ? Color.RED : Color.WHITE);
-        profileButton.setColor(selectedIndex == 2 ? Color.RED : Color.WHITE);
-        scoreboardButton.setColor(selectedIndex == 3 ? Color.RED : Color.WHITE);
-        hintButton.setColor(selectedIndex == 4 ? Color.RED : Color.WHITE);
-        continueButton.setColor(selectedIndex == 5 ? Color.RED : Color.WHITE);
-        exitButton.setColor(selectedIndex == 6 ? Color.RED : Color.WHITE);
+        preGameButton.setColor(index == 0 ? Color.RED : Color.WHITE);
+        settingsButton.setColor(index == 1 ? Color.RED : Color.WHITE);
+        profileButton.setColor(index == 2 ? Color.RED : Color.WHITE);
+        scoreboardButton.setColor(index == 3 ? Color.RED : Color.WHITE);
+        hintButton.setColor(index == 4 ? Color.RED : Color.WHITE);
+        continueButton.setColor(index == 5 ? Color.RED : Color.WHITE);
+        exitButton.setColor(index == 6 ? Color.RED : Color.WHITE);
     }
 
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.DOWN) {
-            selectedIndex = (selectedIndex + 1) % 7;
+            index = (index + 1) % 7;
         } else if (keycode == Input.Keys.UP) {
-            selectedIndex = (selectedIndex - 1 + 7) % 7;
+            index = (index - 1 + 7) % 7;
         } else if (keycode == Input.Keys.ENTER) {
-            if (selectedIndex == 0) {
+            if (index == 0) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
-            } else if (selectedIndex == 1) {
+            } else if (index == 1) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingsMenu());
-            } else if (selectedIndex == 2) {
+            } else if (index == 2) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
-            } else if (selectedIndex == 3) {
+            } else if (index == 3) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreboardMenu());
-            } else if (selectedIndex == 4) {
+            } else if (index == 4) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new HintMenu());
-            } else if (selectedIndex == 5) {
+            } else if (index == 5) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueGameMenu());
             } else {
+                try {
+                    DatabaseManager.updateUser(App.currentUser);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 App.currentUser = null;
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
             }

@@ -52,4 +52,41 @@ public class DatabaseManager {
         prepareStatement.setInt(8, user.totalKills);
         prepareStatement.executeUpdate();
     }
+
+    public static void updateUser(User user) throws SQLException {
+        Connection conn = DatabaseManager.connect();
+        String sql = "UPDATE users SET password = ?, question = ?, answer = ?, avatarPath = ?, score = ?, survivalTime = ?, totalKills = ? WHERE username = ?";
+        PreparedStatement prepareStatement = conn.prepareStatement(sql);
+        prepareStatement.setString(1, user.password);
+        prepareStatement.setString(2, user.question);
+        prepareStatement.setString(3, user.answer);
+        prepareStatement.setString(4, user.avatarPath);
+        prepareStatement.setInt(5, user.score);
+        prepareStatement.setInt(6, user.survivalTime);
+        prepareStatement.setInt(7, user.totalKills);
+        prepareStatement.setString(8, user.username);
+        prepareStatement.executeUpdate();
+    }
+
+    public static void updateUsername(String oldUsername, String newUsername) throws SQLException {
+        Connection conn = DatabaseManager.connect();
+        String sql = "UPDATE users SET username = ? WHERE username = ?";
+        PreparedStatement prepareStatement = conn.prepareStatement(sql);
+        prepareStatement.setString(1, newUsername);
+        prepareStatement.setString(2, oldUsername);
+        prepareStatement.executeUpdate();
+    }
+
+    public static boolean deleteUser(String username) throws SQLException {
+        String sql = "DELETE FROM users WHERE username = ?";
+
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement statement = conn.prepareStatement(sql)) {
+            statement.setString(1, username);
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.controller.MusicManager;
 
 public class LanguageSelectionScreen extends  Game implements Screen, InputProcessor {
 
@@ -61,6 +62,8 @@ public class LanguageSelectionScreen extends  Game implements Screen, InputProce
             } else {
                 App.languageNumber = 1;
             }
+            MusicManager.initialize();
+            MusicManager.play();
             ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
         }
         return true;

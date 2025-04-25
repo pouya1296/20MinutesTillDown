@@ -13,6 +13,9 @@ public class User {
     public int score;
     public int survivalTime;
     public int totalKills;
+    public boolean grayScaleMode;
+    public boolean autoReload;
+    public boolean soundEffect;
 
     public User(String username, String password, String question, String answer, String avatarPath, int score, int survivalTime, int totalKills) {
         this.username = username;
@@ -24,5 +27,8 @@ public class User {
         this.score = 0;
         this.survivalTime = survivalTime;
         this.totalKills = totalKills;
+        this.grayScaleMode = false;
+        this.autoReload = false;
+        this.soundEffect = false;
     }
 }
