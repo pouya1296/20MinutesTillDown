@@ -1,6 +1,6 @@
 package org.example.Model;
 
-import org.example.view.*;
+import org.example.Model.enums.Menu;
 
 public class App {
     public static Menu currentMenu;

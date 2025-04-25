@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import org.example.Model.App;
-import org.example.Model.Language;
+import org.example.Model.enums.Language;
 import org.example.Model.Response;
 import org.example.Model.User;
 

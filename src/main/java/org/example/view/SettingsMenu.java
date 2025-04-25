@@ -132,7 +132,7 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
                 App.currentUser.soundEffect = !App.currentUser.soundEffect;
                 soundEffectCheckBox.setChecked(App.currentUser.soundEffect);
             } else if (index == 3) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new KeyboardMenu());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new KeyboardMenu(App.currentUser.keys));
             } else if (index == 4) {
                 App.currentUser.autoReload = !App.currentUser.autoReload;
                 autoReloadCheckBox.setChecked(App.currentUser.autoReload);

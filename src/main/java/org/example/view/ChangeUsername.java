@@ -9,13 +9,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
-import org.example.Model.Language;
+import org.example.Model.enums.Language;
 import org.example.Model.Response;
-import org.example.Model.User;
 import org.example.controller.ChangeUsernameController;
 import org.example.controller.DatabaseManager;
 import org.example.controller.GameDataManager;
-import org.example.controller.RegisterMenuController;
 
 import java.sql.SQLException;
 

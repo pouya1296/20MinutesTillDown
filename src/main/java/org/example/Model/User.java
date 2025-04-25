@@ -1,7 +1,13 @@
 package org.example.Model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import org.example.Model.enums.Hero;
+import org.example.Model.enums.Weapon;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class User {
     public String username;
@@ -16,6 +22,10 @@ public class User {
     public boolean grayScaleMode;
     public boolean autoReload;
     public boolean soundEffect;
+    public Map<String, Integer> keys = new HashMap<>();
+    public Hero hero;
+    public Weapon weapon;
+    public int time;
 
     public User(String username, String password, String question, String answer, String avatarPath, int score, int survivalTime, int totalKills) {
         this.username = username;
@@ -30,6 +40,20 @@ public class User {
         this.grayScaleMode = false;
         this.autoReload = false;
         this.soundEffect = false;
+        InitializeKeys();
+        this.hero = null;
+        this.time = 120;
+        this.weapon = null;
+    }
+
+    private void InitializeKeys() {
+        keys.put("UP", Input.Keys.W);
+        keys.put("DOWN", Input.Keys.S);
+        keys.put("LEFT", Input.Keys.A);
+        keys.put("RIGHT", Input.Keys.D);
+        keys.put("FIRE", Input.Keys.LEFT);
+        keys.put("AUTO AIM", Input.Keys.SPACE);
+        keys.put("RELOAD", Input.Keys.R);
     }
 
     public String getUsername() {

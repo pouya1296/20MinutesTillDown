@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
-import org.example.Model.Language;
+import org.example.Model.enums.Language;
 
 
 public class StartMenu extends Game implements Menu, Screen, InputProcessor  {

@@ -1,4 +1,4 @@
-package org.example.Model;
+package org.example.Model.enums;
 
 public enum Language {
     REGISTER(new String[]{"Register", "S'inscrire"}),
