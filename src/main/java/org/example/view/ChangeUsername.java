@@ -71,7 +71,7 @@ public class ChangeUsername implements Menu, Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE)
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
         if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 String username = usernameField.getText();

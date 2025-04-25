@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
 import org.example.Model.Language;
 import org.example.Model.Response;
-import org.example.Model.User;
 import org.example.controller.DatabaseManager;
 import org.example.controller.RegisterMenuController;
 
@@ -44,6 +43,7 @@ public class ChangePassword implements Menu, Screen, InputProcessor {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
         stage.addActor(table);
+        stage.setKeyboardFocus(passwordField);
     }
 
     private Table createTable() {
@@ -58,11 +58,9 @@ public class ChangePassword implements Menu, Screen, InputProcessor {
     }
 
     private void createFields() {
-        messageLabel = new Label(Language.ENTER_YOUR_USERNAME.languages[App.languageNumber], skin);
+        messageLabel = new Label(Language.TYPE_YOUR_PASSWORD.languages[App.languageNumber], skin);
         messageLabel.setFontScale(2);
         passwordField = new TextField("", skin);
-        passwordField.setMessageText(Language.TYPE_YOUR_PASSWORD.languages[App.languageNumber]);
-        passwordField.setVisible(true);
         passwordField.setAlignment(Align.center);
         passwordField.setTouchable(Touchable.enabled);
     }
@@ -70,7 +68,7 @@ public class ChangePassword implements Menu, Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE)
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
         if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 String password = passwordField.getText();
@@ -85,9 +83,10 @@ public class ChangePassword implements Menu, Screen, InputProcessor {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
                 }
-            }   ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
             }
+        }
         return false;
     }
 

@@ -87,7 +87,7 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
             selectedIndex = (selectedIndex - 1 + 4) % 4;
         } else if (keycode == Input.Keys.ENTER) {
             if (selectedIndex == 0) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ChangeUsername());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new RegisterMenu());
             } else if (selectedIndex == 1) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginMenu());
             } else if (selectedIndex == 2) {
