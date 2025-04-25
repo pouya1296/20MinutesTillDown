@@ -31,4 +31,20 @@ public class User {
         this.autoReload = false;
         this.soundEffect = false;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getSurvivalTime() {
+        return survivalTime;
+    }
+
+    public int getTotalKills() {
+        return totalKills;
+    }
 }

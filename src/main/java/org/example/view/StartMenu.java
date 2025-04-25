@@ -63,12 +63,12 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
         labelStyle.font = skin.getFont("default-font");
         labelStyle.fontColor = Color.RED;
         Label bottomMessage = new Label("Pouya Astaraki", labelStyle);
-        bottomMessage.setFontScale(10);
+        bottomMessage.setFontScale(2);
         bottomMessage.setAlignment(Align.center);
         Table messageTable = new Table();
         messageTable.setFillParent(true);
         messageTable.bottom();
-        messageTable.add(bottomMessage).expandX().padBottom(20);
+        messageTable.add(bottomMessage).expandX().center().padBottom(50);
         return messageTable;
     }
 

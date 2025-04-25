@@ -3,10 +3,12 @@ package org.example.controller;
 import org.example.Model.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseManager {
     public static Connection connect() throws SQLException {
-        return DriverManager.getConnection( "jdbc:sqlite:C:/Users/ASUS/users.db");
+        return DriverManager.getConnection("jdbc:sqlite:C:/Users/ASUS/users.db");
     }
 
     public static User getUser(String username) throws SQLException {
@@ -88,5 +90,31 @@ public class DatabaseManager {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static List<User> getAllUsers() throws SQLException {
+        String sql = "SELECT * FROM users";
+
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = DatabaseManager.connect();
+             PreparedStatement prepareStatement = conn.prepareStatement(sql);
+             ResultSet rs = prepareStatement.executeQuery()) {
+            while (rs.next()) {
+                users.add(new User(
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("question"),
+                        rs.getString("answer"),
+                        rs.getString("avatarPath"),
+                        rs.getInt("score"),
+                        rs.getInt("survivalTime"),
+                        rs.getInt("totalKills")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 }
