@@ -4,9 +4,11 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
@@ -244,6 +246,77 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
         stage.addActor(backgroundImage);
         stage.addActor(table);
         updateSelection();
-        Gdx.input.setInputProcessor(this);
+        addClickListener();
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
+
+    private void addClickListener() {
+        musicVolumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (MusicManager.getBackgroundMusic().isPlaying()) {
+                    MusicManager.stop();
+                } else {
+                    MusicManager.play();
+                }
+            }
+        });
+
+        musicTrackButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MusicMenu());
+            }
+        });
+
+        soundEffectButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.currentUser.soundEffect = !App.currentUser.soundEffect;
+                soundEffectCheckBox.setChecked(App.currentUser.soundEffect);
+            }
+        });
+
+        keyboardControlButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new KeyboardMenu(App.currentUser.keys));
+            }
+        });
+
+        autoReloadButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.currentUser.autoReload = !App.currentUser.autoReload;
+                autoReloadCheckBox.setChecked(App.currentUser.autoReload);
+            }
+        });
+
+        grayscaleButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.currentUser.grayScaleMode = !App.currentUser.grayScaleMode;
+                grayscaleCheckBox.setChecked(App.currentUser.grayScaleMode);
+            }
+        });
+
+        volumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                float newVolume = volumeSlider.getValue();
+                MusicManager.setVolume(newVolume);
+            }
+        });
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+            }
+        });
+    }
+
 }

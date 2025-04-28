@@ -3,8 +3,10 @@ package org.example.view;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
@@ -41,9 +43,69 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
         stage.addActor(userInfoTable);
         stage.addActor(table);
         updateSelection();
-        Gdx.input.setInputProcessor(this);
+        addClickListeners();
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
+    private void addClickListeners() {
+        preGameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+            }
+        });
+
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingsMenu());
+            }
+        });
+
+        profileButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
+            }
+        });
+
+        scoreboardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreboardMenu());
+            }
+        });
+
+        hintButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new HintMenu());
+            }
+        });
+
+        continueButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueGameMenu());
+            }
+        });
+
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                try {
+                    DatabaseManager.updateUser(App.currentUser);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                App.currentUser = null;
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            }
+        });
+    }
 
     private Table createUserInfoTable() {
         Table userInfoTable = new Table();

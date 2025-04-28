@@ -3,8 +3,10 @@ package org.example.view;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
@@ -33,8 +35,56 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
         stage.addActor(backgroundImage);
         stage.addActor(table);
         updateSelection();
-        Gdx.input.setInputProcessor(this);
+        addClickListener();
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
+
+    private void addClickListener() {
+        changeUsernameButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ChangeUsername());
+            }
+        });
+
+        changePasswordButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ChangePassword());
+            }
+        });
+
+        deleteAccountButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                try {
+                    DatabaseManager.deleteUser(App.currentUser.username);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                App.currentUser = null;
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            }
+        });
+
+        changeAvatarButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new AvatarMenu());
+            }
+        });
+
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+            }
+        });
+    }
+
 
     @Override
     public void show() {
@@ -93,7 +143,7 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
                 App.currentUser = null;
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
             } else if (index == 3) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ChangeAvatar());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new AvatarMenu());
             } else if (index == 4) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }

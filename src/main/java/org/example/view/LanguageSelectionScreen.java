@@ -2,11 +2,11 @@ package org.example.view;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -14,22 +14,54 @@ import org.example.Model.App;
 import org.example.controller.MusicManager;
 
 public class LanguageSelectionScreen extends  Game implements Screen, InputProcessor {
-
     private Stage stage;
     private Skin skin;
     private TextButton englishButton, frenchButton;
     private int selectedIndex = 0;
+    private Texture backgroundTexture;
+    private Image backgroundImage;
 
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
         Label titleLabel = new Label("Select Language", skin);
+        backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\registerbackground.png"));
+        backgroundImage = new Image(backgroundTexture);
+        backgroundImage.setFillParent(true);
+        stage.addActor(backgroundImage);
         titleLabel.setFontScale(2);
         titleLabel.setAlignment(Align.center);
         Table table = createButtons(titleLabel);
         stage.addActor(table);
-        Gdx.input.setInputProcessor(this);
+        addClickListener();
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
+
+    private void addClickListener() {
+        englishButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.languageNumber = 0;
+                MusicManager.initialize();
+                MusicManager.play();
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            }
+        });
+
+        frenchButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                App.languageNumber = 1;
+                MusicManager.initialize();
+                MusicManager.play();
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            }
+        });
+    }
+
 
     private Table createButtons(Label titleLabel) {
         englishButton = new TextButton("English", skin);

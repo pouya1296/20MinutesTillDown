@@ -41,9 +41,9 @@ public class User {
         this.autoReload = false;
         this.soundEffect = false;
         InitializeKeys();
-        this.hero = null;
+        this.hero = Hero.SHANA;
         this.time = 120;
-        this.weapon = null;
+        this.weapon = Weapon.REVOLVER;
     }
 
     private void InitializeKeys() {
