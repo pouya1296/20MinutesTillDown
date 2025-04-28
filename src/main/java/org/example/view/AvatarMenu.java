@@ -1,11 +1,9 @@
 package org.example.view;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -13,10 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.FilePicker;
 
 public class AvatarMenu implements Screen {
@@ -71,14 +70,14 @@ public class AvatarMenu implements Screen {
             avatarTable.add(avatar).size(100, 100).pad(5);
         }
 
-        selectFileButton = new TextButton("Select from File", skin);
-        backButton = new TextButton("Back to Profile Menu", skin);
+        selectFileButton = new TextButton(Language.SELECT_FROM_FILE.languages[App.languageNumber], skin);
+        backButton = new TextButton(Language.BACK_TO_PROFILE.languages[App.languageNumber], skin);
 
         selectFileButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 String selectedAvatarPath = FilePicker.selectFile();
-                if(selectedAvatarPath != null) {
+                if (selectedAvatarPath != null) {
                     App.currentUser.avatarPath = selectedAvatarPath;
                     currentAvatarTexture = new Texture(Gdx.files.internal(selectedAvatarPath));
                 }
@@ -88,7 +87,7 @@ public class AvatarMenu implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
+                ChangeMenuController.changeMenu(AvatarMenu.this, new ProfileMenu());
             }
         });
         currentAvatarTexture = new Texture(Gdx.files.internal(App.currentUser.avatarPath));

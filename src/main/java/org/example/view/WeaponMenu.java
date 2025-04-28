@@ -10,7 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.Model.enums.Language;
 import org.example.Model.enums.Weapon;
+import org.example.controller.ChangeMenuController;
 
 public class WeaponMenu implements Screen, InputProcessor {
     private Stage stage;
@@ -32,13 +34,13 @@ public class WeaponMenu implements Screen, InputProcessor {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-        selectedWeaponLabel = new Label("Selected Weapon: " + App.currentUser.weapon, skin);
+        selectedWeaponLabel = new Label(Language.SELECTED_WEAPON.languages[App.languageNumber] + App.currentUser.weapon, skin);
         selectedWeaponLabel.setColor(Color.YELLOW);
 
         revolverButton = new TextButton("REVOLVER", skin);
         shotgunButton = new TextButton("SHOTGUN", skin);
         smgDualButton = new TextButton("SMGs DUAL", skin);
-        backButton = new TextButton("Back to PreGame Menu", skin);
+        backButton = new TextButton(Language.BACK_TO_PRE_GAME_MENU.languages[App.languageNumber], skin);
 
         addClickListeners();
 
@@ -70,7 +72,7 @@ public class WeaponMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 index = 0;
                 App.currentUser.weapon = weapons[index];
-                selectedWeaponLabel.setText("Selected Weapon: " + App.currentUser.weapon.name);
+                selectedWeaponLabel.setText(Language.SELECTED_WEAPON.languages[App.languageNumber] + App.currentUser.weapon.name);
                 updateSelection();
             }
         };
@@ -79,7 +81,7 @@ public class WeaponMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 index = 1;
                 App.currentUser.weapon = weapons[index];
-                selectedWeaponLabel.setText("Selected Weapon: " + App.currentUser.weapon.name);
+                selectedWeaponLabel.setText(Language.SELECTED_WEAPON.languages[App.languageNumber] + App.currentUser.weapon.name);
                 updateSelection();
             }
         };
@@ -88,7 +90,7 @@ public class WeaponMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 index = 2;
                 App.currentUser.weapon = weapons[index];
-                selectedWeaponLabel.setText("Selected Weapon: " + App.currentUser.weapon.name);
+                selectedWeaponLabel.setText(Language.SELECTED_WEAPON.languages[App.languageNumber] + App.currentUser.weapon.name);
                 updateSelection();
             }
         };
@@ -100,7 +102,7 @@ public class WeaponMenu implements Screen, InputProcessor {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+                ChangeMenuController.changeMenu(WeaponMenu.this, new PreGameMenu());
             }
         });
     }
@@ -120,10 +122,10 @@ public class WeaponMenu implements Screen, InputProcessor {
             index = (index - 1 + (weapons.length + 1)) % (weapons.length + 1);
         } else if (keycode == Input.Keys.ENTER) {
             if (index == 3) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+                ChangeMenuController.changeMenu(WeaponMenu.this, new PreGameMenu());
             } else {
                 App.currentUser.weapon = weapons[index];
-                selectedWeaponLabel.setText("Selected Weapon: " + weapons[index].name);
+                selectedWeaponLabel.setText(Language.SELECTED_WEAPON.languages[App.languageNumber] + weapons[index].name);
             }
         }
         updateSelection();
@@ -131,19 +133,39 @@ public class WeaponMenu implements Screen, InputProcessor {
     }
 
     @Override
-    public boolean keyUp(int i) { return false; }
+    public boolean keyUp(int i) {
+        return false;
+    }
+
     @Override
-    public boolean keyTyped(char c) { return false; }
+    public boolean keyTyped(char c) {
+        return false;
+    }
+
     @Override
-    public boolean touchDown(int i, int i1, int i2, int i3) { return false; }
+    public boolean touchDown(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
     @Override
-    public boolean touchUp(int i, int i1, int i2, int i3) { return false; }
+    public boolean touchUp(int i, int i1, int i2, int i3) {
+        return false;
+    }
+
     @Override
-    public boolean touchDragged(int i, int i1, int i2) { return false; }
+    public boolean touchDragged(int i, int i1, int i2) {
+        return false;
+    }
+
     @Override
-    public boolean mouseMoved(int i, int i1) { return false; }
+    public boolean mouseMoved(int i, int i1) {
+        return false;
+    }
+
     @Override
-    public boolean scrolled(float v, float v1) { return false; }
+    public boolean scrolled(float v, float v1) {
+        return false;
+    }
 
     @Override
     public void render(float delta) {
@@ -153,13 +175,22 @@ public class WeaponMenu implements Screen, InputProcessor {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+    }
+
     @Override
-    public void pause() {}
+    public void pause() {
+    }
+
     @Override
-    public void resume() {}
+    public void resume() {
+    }
+
     @Override
-    public void hide() {}
+    public void hide() {
+    }
+
     @Override
-    public void dispose() {}
+    public void dispose() {
+    }
 }

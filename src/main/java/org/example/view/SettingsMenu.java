@@ -12,12 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.MusicManager;
 
 public class SettingsMenu implements Menu, Screen, InputProcessor {
     private Stage stage;
     private Skin skin;
-    private TextButton musicVolumeButton, musicTrackButton, soundEffectButton, keyboardControlButton, autoReloadButton, grayscaleButton, backButton;
+    private TextButton musicOnOffButton, musicTrackButton, soundEffectButton, keyboardControlButton, autoReloadButton, grayscaleButton, backButton;
     private int index = 0;
     private CheckBox soundEffectCheckBox, autoReloadCheckBox, grayscaleCheckBox;
     private Texture backgroundTexture;
@@ -31,10 +33,10 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
     }
 
     private void showBooleanVariables() {
-        soundEffectCheckBox = new CheckBox("Sound Effect", skin);
-        autoReloadCheckBox = new CheckBox(" Auto Reload", skin);
-        grayscaleCheckBox = new CheckBox(" Grayscale Mode", skin);
-        backButton = new TextButton("Back to Main Menu", skin);
+        soundEffectCheckBox = new CheckBox(Language.SOUND_EFFECTS.languages[App.languageNumber], skin);
+        autoReloadCheckBox = new CheckBox(Language.AUTO_RELOAD.languages[App.languageNumber], skin);
+        grayscaleCheckBox = new CheckBox(Language.GRAYSCALE_MODE.languages[App.languageNumber], skin);
+        backButton = new TextButton(Language.BACK_TO_MAIN_MENU.languages[App.languageNumber], skin);
         soundEffectCheckBox.setChecked(App.currentUser.soundEffect);
         autoReloadCheckBox.setChecked(App.currentUser.autoReload);
         grayscaleCheckBox.setChecked(App.currentUser.grayScaleMode);
@@ -62,14 +64,14 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
     }
 
     private void createSettingsButtons() {
-        musicVolumeButton = new TextButton("Music on/off", skin);
-        musicTrackButton = new TextButton("Music Track Selection", skin);
-        soundEffectButton = new TextButton("Sound Effect Toggle", skin);
-        keyboardControlButton = new TextButton("Keyboard Control", skin);
-        autoReloadButton = new TextButton("Auto Reload Setting", skin);
-        grayscaleButton = new TextButton("Grayscale Mode", skin);
-        volumeButton = new TextButton("Change Volume", skin);
-        backButton = new TextButton("Back to Main Menu", skin);
+        musicOnOffButton = new TextButton(Language.MUSIC_ON_OFF.languages[App.languageNumber], skin);
+        musicTrackButton = new TextButton(Language.MUSIC_TRACK_SELECTION.languages[App.languageNumber], skin);
+        soundEffectButton = new TextButton(Language.SOUND_EFFECT_TOGGLE.languages[App.languageNumber], skin);
+        keyboardControlButton = new TextButton(Language.KEYBOARD_CONTROLS.languages[App.languageNumber], skin);
+        autoReloadButton = new TextButton(Language.AUTO_RELOAD_SETTING.languages[App.languageNumber], skin);
+        grayscaleButton = new TextButton(Language.GRAYSCALE_MODE.languages[App.languageNumber], skin);
+        volumeButton = new TextButton(Language.CHANGE_VOLUME.languages[App.languageNumber], skin);
+        backButton = new TextButton(Language.BACK_TO_MAIN_MENU.languages[App.languageNumber], skin);
     }
 
     private Table createTable() {
@@ -82,7 +84,7 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
         table.row();
         table.add(grayscaleCheckBox).size(250, 50).pad(10);
         table.row();
-        table.add(musicVolumeButton).size(250, 50).pad(10);
+        table.add(musicOnOffButton).size(250, 50).pad(10);
         table.row();
         table.add(musicTrackButton).size(250, 50).pad(10);
         table.row();
@@ -105,7 +107,7 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
     }
 
     private void updateSelection() {
-        musicVolumeButton.setColor(index == 0 ? Color.RED : Color.WHITE);
+        musicOnOffButton.setColor(index == 0 ? Color.RED : Color.WHITE);
         musicTrackButton.setColor(index == 1 ? Color.RED : Color.WHITE);
         soundEffectButton.setColor(index == 2 ? Color.RED : Color.WHITE);
         keyboardControlButton.setColor(index == 3 ? Color.RED : Color.WHITE);
@@ -129,12 +131,12 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
                 else
                     MusicManager.play();
             } else if (index == 1) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MusicMenu());
+                ChangeMenuController.changeMenu(SettingsMenu.this, new MusicMenu());
             } else if (index == 2) {
                 App.currentUser.soundEffect = !App.currentUser.soundEffect;
                 soundEffectCheckBox.setChecked(App.currentUser.soundEffect);
             } else if (index == 3) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new KeyboardMenu(App.currentUser.keys));
+                ChangeMenuController.changeMenu(SettingsMenu.this, new KeyboardMenu(App.currentUser.keys));
             } else if (index == 4) {
                 App.currentUser.autoReload = !App.currentUser.autoReload;
                 autoReloadCheckBox.setChecked(App.currentUser.autoReload);
@@ -142,7 +144,7 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
                 App.currentUser.grayScaleMode = !App.currentUser.grayScaleMode;
                 grayscaleCheckBox.setChecked(App.currentUser.grayScaleMode);
             } else if (index == 7) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(SettingsMenu.this, new MainMenu());
             }
             updateSelection();
             return true;
@@ -254,7 +256,7 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
     }
 
     private void addClickListener() {
-        musicVolumeButton.addListener(new ClickListener() {
+        musicOnOffButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (MusicManager.getBackgroundMusic().isPlaying()) {
@@ -268,53 +270,61 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
         musicTrackButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MusicMenu());
+                ChangeMenuController.changeMenu(SettingsMenu.this, new MusicMenu());
             }
         });
 
         soundEffectButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                index = 2;
                 App.currentUser.soundEffect = !App.currentUser.soundEffect;
                 soundEffectCheckBox.setChecked(App.currentUser.soundEffect);
+                updateSelection();
             }
         });
 
         keyboardControlButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new KeyboardMenu(App.currentUser.keys));
+                ChangeMenuController.changeMenu(SettingsMenu.this, new KeyboardMenu(App.currentUser.keys));
             }
         });
 
         autoReloadButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                index = 4;
                 App.currentUser.autoReload = !App.currentUser.autoReload;
                 autoReloadCheckBox.setChecked(App.currentUser.autoReload);
+                updateSelection();
             }
         });
 
         grayscaleButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                index = 5;
                 App.currentUser.grayScaleMode = !App.currentUser.grayScaleMode;
                 grayscaleCheckBox.setChecked(App.currentUser.grayScaleMode);
+                updateSelection();
             }
         });
 
         volumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                index = 6;
                 float newVolume = volumeSlider.getValue();
                 MusicManager.setVolume(newVolume);
+                updateSelection();
             }
         });
 
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(SettingsMenu.this, new MainMenu());
             }
         });
     }

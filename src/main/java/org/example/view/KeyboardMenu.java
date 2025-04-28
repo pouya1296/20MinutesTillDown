@@ -1,11 +1,18 @@
 package org.example.view;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.example.Model.App;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 
 import java.util.Map;
 
@@ -38,7 +45,7 @@ public class KeyboardMenu implements Screen {
             TextField keyField = new TextField(Input.Keys.toString(entry.getValue()), skin);
             keyField.setDisabled(true);
 
-            TextButton changeButton = new TextButton("Change", skin);
+            TextButton changeButton = new TextButton(Language.CHANGE.languages[App.languageNumber], skin);
             changeButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -60,11 +67,11 @@ public class KeyboardMenu implements Screen {
             table.row();
         }
 
-        backButton = new TextButton("Back to Settings menu", skin);
+        backButton = new TextButton(Language.BACK_TO_SETTINGS.languages[App.languageNumber], skin);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingsMenu());
+                ChangeMenuController.changeMenu(KeyboardMenu.this, new SettingsMenu());
             }
         });
 

@@ -6,7 +6,7 @@ public enum Ability {
     PROCREASE("procrease"),
     AMOCREASE("amorecase"),
     SPEEDY("speedy"),;
-    public final String name;
+    public  String name;
 
     Ability(String name) {
         this.name = name;

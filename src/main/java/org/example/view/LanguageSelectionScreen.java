@@ -11,9 +11,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.MusicManager;
 
-public class LanguageSelectionScreen extends  Game implements Screen, InputProcessor {
+public class LanguageSelectionScreen extends Game implements Screen, InputProcessor {
     private Stage stage;
     private Skin skin;
     private TextButton englishButton, frenchButton;
@@ -29,7 +30,7 @@ public class LanguageSelectionScreen extends  Game implements Screen, InputProce
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
-        titleLabel.setFontScale(2);
+        titleLabel.setFontScale(1.5f);
         titleLabel.setAlignment(Align.center);
         Table table = createButtons(titleLabel);
         stage.addActor(table);
@@ -47,7 +48,7 @@ public class LanguageSelectionScreen extends  Game implements Screen, InputProce
                 App.languageNumber = 0;
                 MusicManager.initialize();
                 MusicManager.play();
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+                ChangeMenuController.changeMenu(LanguageSelectionScreen.this, new StartMenu());
             }
         });
 
@@ -57,7 +58,7 @@ public class LanguageSelectionScreen extends  Game implements Screen, InputProce
                 App.languageNumber = 1;
                 MusicManager.initialize();
                 MusicManager.play();
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+                ChangeMenuController.changeMenu(LanguageSelectionScreen.this, new StartMenu());
             }
         });
     }
@@ -96,7 +97,7 @@ public class LanguageSelectionScreen extends  Game implements Screen, InputProce
             }
             MusicManager.initialize();
             MusicManager.play();
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            ChangeMenuController.changeMenu(LanguageSelectionScreen.this, new StartMenu());
         }
         return true;
     }

@@ -9,8 +9,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
-import org.example.Model.enums.Language;
 import org.example.Model.Response;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.ChangeUsernameController;
 import org.example.controller.DatabaseManager;
 import org.example.controller.GameDataManager;
@@ -69,7 +70,7 @@ public class ChangeUsername implements Menu, Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE)
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
+            ChangeMenuController.changeMenu(ChangeUsername.this, new ProfileMenu());
         if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 String username = usernameField.getText();
@@ -82,7 +83,7 @@ public class ChangeUsername implements Menu, Screen, InputProcessor {
                 if (!usernameResponse.success) {
                     messageLabel.setText(usernameResponse.responseMessage);
                 } else {
-                    messageLabel.setText("username changed to: " + username);
+                    messageLabel.setText(Language.US_CHANGE.languages[App.languageNumber] + username);
                     try {
                         DatabaseManager.updateUsername(App.currentUser.username, username);
                     } catch (SQLException e) {
@@ -90,7 +91,7 @@ public class ChangeUsername implements Menu, Screen, InputProcessor {
                     }
                     GameDataManager.updateGameUsername(App.currentUser.username, username);
                     App.currentUser.username = username;
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
+                    ChangeMenuController.changeMenu(ChangeUsername.this, new ProfileMenu());
                 }
             }
         }

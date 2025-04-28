@@ -1,5 +1,6 @@
 package org.example.Model;
 
+import com.badlogic.gdx.Gdx;
 import org.example.Model.enums.Menu;
 
 public class App {
@@ -7,6 +8,7 @@ public class App {
     public org.example.view.Menu[] menus = new org.example.view.Menu[9];
     public static int languageNumber = 0;
     public static User currentUser = null;
+    public static Game currentGame = null;
 
     public App() {
 

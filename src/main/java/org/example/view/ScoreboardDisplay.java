@@ -1,6 +1,5 @@
 package org.example.view;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +12,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
 import org.example.Model.User;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 
 import java.util.List;
 
@@ -44,12 +45,12 @@ public class ScoreboardDisplay implements Screen {
         stage.addActor(backgroundImage);
 
         Table headerTable = new Table(skin);
-        headerTable.add("Rank").pad(5).left();
-        headerTable.add("Avatar").pad(5).left();
-        headerTable.add("Username").pad(5).left();
-        headerTable.add("Score").pad(5).left();
-        headerTable.add("Kills").pad(5).left();
-        headerTable.add("Survival Time").pad(5).left();
+        headerTable.add(Language.RANK.languages[App.languageNumber]).pad(5).left();
+        headerTable.add(Language.AVATAR.languages[App.languageNumber]).pad(5).left();
+        headerTable.add(Language.USERNAME.languages[App.languageNumber]).pad(5).left();
+        headerTable.add(Language.SCORE.languages[App.languageNumber]).pad(5).left();
+        headerTable.add(Language.KILLS.languages[App.languageNumber]).pad(5).left();
+        headerTable.add(Language.SURVIVAL_TIME.languages[App.languageNumber]).pad(5).left();
         table.add(headerTable).padBottom(10);
         table.row();
 
@@ -89,11 +90,11 @@ public class ScoreboardDisplay implements Screen {
         }
 
 
-        backButton = new TextButton("Back to Main Menu", skin);
+        backButton = new TextButton(Language.BACK_TO_MAIN_MENU.languages[App.languageNumber], skin);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(ScoreboardDisplay.this, new MainMenu());
             }
         });
 

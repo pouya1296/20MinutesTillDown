@@ -10,7 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.DatabaseManager;
+import org.example.controller.GameDataManager;
 
 import java.sql.SQLException;
 
@@ -29,7 +32,7 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
-        backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\mainMenu.jpeg"));
+        backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\mainMenu.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
         avatarTexture = new Texture(Gdx.files.internal(App.currentUser.avatarPath));
@@ -54,42 +57,43 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
         preGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new PreGameMenu());
             }
         });
 
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingsMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new SettingsMenu());
             }
         });
 
         profileButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new ProfileMenu());
             }
         });
 
         scoreboardButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreboardMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new ScoreboardMenu());
             }
         });
 
         hintButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new HintMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new HintMenu());
             }
         });
 
         continueButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueGameMenu());
+                App.currentGame = GameDataManager.getLastGame(App.currentUser.username);
+                ChangeMenuController.changeMenu(MainMenu.this, new GameMenu(App.currentGame));
             }
         });
 
@@ -102,7 +106,7 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
                     throw new RuntimeException(e);
                 }
                 App.currentUser = null;
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new StartMenu());
             }
         });
     }
@@ -122,13 +126,13 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
 
 
     private void createMainMenuButtons() {
-        preGameButton = new TextButton("Pre Game Menu", skin);
-        settingsButton = new TextButton("Settings", skin);
-        profileButton = new TextButton("Profile", skin);
-        scoreboardButton = new TextButton("Scoreboard", skin);
-        hintButton = new TextButton("Hint Menu", skin);
-        continueButton = new TextButton("Continue Saved Game", skin);
-        exitButton = new TextButton("Logout", skin);
+        preGameButton = new TextButton(Language.PRE_GAME_MENU.languages[App.languageNumber], skin);
+        settingsButton = new TextButton(Language.SETTINGS.languages[App.languageNumber], skin);
+        profileButton = new TextButton(Language.PROFILE.languages[App.languageNumber], skin);
+        scoreboardButton = new TextButton(Language.SCOREBOARD.languages[App.languageNumber], skin);
+        hintButton = new TextButton(Language.HINT_MENU.languages[App.languageNumber], skin);
+        continueButton = new TextButton(Language.CONTINUE_SAVED_GAME.languages[App.languageNumber], skin);
+        exitButton = new TextButton(Language.LOGOUT.languages[App.languageNumber], skin);
     }
 
     private Table createTable() {
@@ -169,17 +173,19 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
             index = (index - 1 + 7) % 7;
         } else if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new PreGameMenu());
             } else if (index == 1) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingsMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new SettingsMenu());
             } else if (index == 2) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new ProfileMenu());
             } else if (index == 3) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreboardMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new ScoreboardMenu());
             } else if (index == 4) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new HintMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new HintMenu());
             } else if (index == 5) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ContinueGameMenu());
+                App.currentGame = GameDataManager.getLastGame(App.currentUser.username);
+                if(App.currentGame != null)
+                ChangeMenuController.changeMenu(MainMenu.this, App.currentGame.gameMenu);
             } else {
                 try {
                     DatabaseManager.updateUser(App.currentUser);
@@ -187,7 +193,7 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
                     throw new RuntimeException(e);
                 }
                 App.currentUser = null;
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+                ChangeMenuController.changeMenu(MainMenu.this, new StartMenu());
             }
         }
         updateSelection();

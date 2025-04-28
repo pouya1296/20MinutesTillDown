@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
 import org.example.Model.enums.Hero;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 
 public class HeroMenu implements Screen, InputProcessor {
     private Stage stage;
@@ -75,7 +77,7 @@ public class HeroMenu implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 App.currentUser.hero = heroes[index];
-                selectedHeroLabel.setText("Selected Hero: " + App.currentUser.hero.name);
+                selectedHeroLabel.setText(Language.SEL_HERO.languages[App.languageNumber] + App.currentUser.hero.name);
                 updateSelection();
             }
         };
@@ -84,7 +86,7 @@ public class HeroMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 index = 1;
                 App.currentUser.hero = heroes[index];
-                selectedHeroLabel.setText("Selected Hero: " + App.currentUser.hero.name);
+                selectedHeroLabel.setText(Language.SEL_HERO.languages[App.languageNumber] + App.currentUser.hero.name);
                 updateSelection();
             }
         };
@@ -93,7 +95,7 @@ public class HeroMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 index = 2;
                 App.currentUser.hero = heroes[index];
-                selectedHeroLabel.setText("Selected Hero: " + App.currentUser.hero.name);
+                selectedHeroLabel.setText(Language.SEL_HERO.languages[App.languageNumber] + App.currentUser.hero.name);
                 updateSelection();
             }
         };
@@ -102,7 +104,7 @@ public class HeroMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 index = 3;
                 App.currentUser.hero = heroes[index];
-                selectedHeroLabel.setText("Selected Hero: " + App.currentUser.hero.name);
+                selectedHeroLabel.setText(Language.SEL_HERO.languages[App.languageNumber] + App.currentUser.hero.name);
                 updateSelection();
             }
         };
@@ -111,7 +113,7 @@ public class HeroMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 index = 4;
                 App.currentUser.hero = heroes[index];
-                selectedHeroLabel.setText("Selected Hero: " + App.currentUser.hero.name);
+                selectedHeroLabel.setText(Language.SEL_HERO.languages[App.languageNumber] + App.currentUser.hero.name);
                 updateSelection();
             }
         };
@@ -126,7 +128,7 @@ public class HeroMenu implements Screen, InputProcessor {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+                ChangeMenuController.changeMenu(HeroMenu.this, new PreGameMenu());
             }
         });
     }
@@ -148,10 +150,10 @@ public class HeroMenu implements Screen, InputProcessor {
             index = (index - 1 + (heroes.length + 1)) % (heroes.length + 1);
         } else if (keycode == Input.Keys.ENTER) {
             if (index == 5) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+                ChangeMenuController.changeMenu(HeroMenu.this, new PreGameMenu());
             } else {
                 App.currentUser.hero = heroes[index];
-                selectedHeroLabel.setText("Selected Hero: " + heroes[index].name);
+                selectedHeroLabel.setText(Language.SEL_HERO.languages[App.languageNumber] + heroes[index].name);
             }
         }
         updateSelection();

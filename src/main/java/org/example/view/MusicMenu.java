@@ -12,6 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.example.Model.App;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.MusicManager;
 
 public class MusicMenu implements Screen, InputProcessor {
@@ -40,6 +43,7 @@ public class MusicMenu implements Screen, InputProcessor {
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
+
     private void addClickListener() {
         track1Button.addListener(new ClickListener() {
             @Override
@@ -93,7 +97,7 @@ public class MusicMenu implements Screen, InputProcessor {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(MusicMenu.this, new MainMenu());
             }
         });
     }
@@ -107,7 +111,7 @@ public class MusicMenu implements Screen, InputProcessor {
         track5Button = new TextButton("Lonely", skin);
         track6Button = new TextButton("Sweet Dreams", skin);
         track7Button = new TextButton("Tabestoon Kootahe", skin);
-        backButton = new TextButton("Back to Main Menu", skin);
+        backButton = new TextButton(Language.BACK_TO_MAIN_MENU.languages[App.languageNumber], skin);
     }
 
     private Table createTable() {
@@ -164,9 +168,8 @@ public class MusicMenu implements Screen, InputProcessor {
                 MusicManager.changeMusic("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\music\\sweet.mp3");
             } else if (index == 6) {
                 MusicManager.changeMusic("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\music\\tabestoon.mp3");
-            }
-            else if (index == 7) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+            } else if (index == 7) {
+                ChangeMenuController.changeMenu(MusicMenu.this, new MainMenu());
             }
             updateSelection();
             return true;

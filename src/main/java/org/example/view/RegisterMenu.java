@@ -9,9 +9,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
-import org.example.Model.enums.Language;
 import org.example.Model.Response;
 import org.example.Model.User;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.DatabaseManager;
 import org.example.controller.RegisterMenuController;
 
@@ -89,7 +90,7 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE)
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            ChangeMenuController.changeMenu(RegisterMenu.this, new StartMenu());
         if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 String username = usernameField.getText();
@@ -136,7 +137,7 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
                 String password = passwordField.getText();
                 String question = questionField.getText();
                 String answer = answerField.getText();
-                User user = new User(username, password, question, answer, App.getAvatarPath(), 0, 0, 0);
+                User user = new User(username, password, question, answer, App.getAvatarPath(), 0, 0, 0, false);
                 try {
                     DatabaseManager.saveUser(user);
                 } catch (SQLException e) {
@@ -144,7 +145,7 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
                 }
                 messageLabel.setText(Language.REGISTERED_SUCCESSFULLY.languages[App.languageNumber]);
                 App.currentUser = user;
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(RegisterMenu.this, new MainMenu());
             }
         }
         return false;

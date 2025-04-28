@@ -5,10 +5,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.example.Model.App;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 
 public class PreGameMenu implements Screen, InputProcessor {
     private Stage stage;
@@ -28,11 +34,11 @@ public class PreGameMenu implements Screen, InputProcessor {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
-        heroMenuButton = new TextButton("Hero Menu", skin);
-        weaponMenuButton = new TextButton("Weapon Menu", skin);
-        timeMenuButton = new TextButton("Time Menu", skin);
-        newGameButton = new TextButton("New Game", skin);
-        backButton = new TextButton("Back to Main Menu", skin);
+        heroMenuButton = new TextButton(Language.HERO_MENU.languages[App.languageNumber], skin);
+        weaponMenuButton = new TextButton(Language.WEAPON_MENU.languages[App.languageNumber], skin);
+        timeMenuButton = new TextButton(Language.TIMER_MENU.languages[App.languageNumber], skin);
+        newGameButton = new TextButton(Language.NEW_GAME.languages[App.languageNumber], skin);
+        backButton = new TextButton(Language.BACK_TO_MAIN_MENU.languages[App.languageNumber], skin);
 
         addClick();
 
@@ -61,35 +67,36 @@ public class PreGameMenu implements Screen, InputProcessor {
         heroMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new HeroMenu());
+                ChangeMenuController.changeMenu(PreGameMenu.this, new HeroMenu());
             }
         });
 
         weaponMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new WeaponMenu());
+                ChangeMenuController.changeMenu(PreGameMenu.this, new WeaponMenu());
             }
         });
 
         timeMenuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new TimeMenu());
+                ChangeMenuController.changeMenu(PreGameMenu.this, new TimeMenu());
             }
         });
 
         newGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameMenu());
+                App.currentGame = new org.example.Model.Game(App.currentUser);
+                ChangeMenuController.changeMenu(PreGameMenu.this, new GameMenu(App.currentGame));
             }
         });
 
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(PreGameMenu.this, new MainMenu());
             }
         });
     }
@@ -110,15 +117,16 @@ public class PreGameMenu implements Screen, InputProcessor {
             index = (index - 1 + 5) % 5;
         } else if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new HeroMenu());
+                ChangeMenuController.changeMenu(this, new HeroMenu());
             } else if (index == 1) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new WeaponMenu());
+                ChangeMenuController.changeMenu(this, new WeaponMenu());
             } else if (index == 2) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new TimeMenu());
+                ChangeMenuController.changeMenu(this, new TimeMenu());
             } else if (index == 3) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameMenu());
+                App.currentGame = new org.example.Model.Game(App.currentUser);
+                ChangeMenuController.changeMenu(this, App.currentGame.gameMenu);
             } else {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(this, new MainMenu());
             }
         }
         updateSelection();
@@ -189,6 +197,8 @@ public class PreGameMenu implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-
+        stage.clear();
+        stage.dispose();
+        skin.dispose();
     }
 }

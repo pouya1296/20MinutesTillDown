@@ -9,8 +9,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
-import org.example.Model.enums.Language;
 import org.example.Model.Response;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.DatabaseManager;
 import org.example.controller.LoginMeuController;
 
@@ -81,7 +82,7 @@ public class LoginMenu implements Menu, Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE)
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+            ChangeMenuController.changeMenu(LoginMenu.this, new StartMenu());
         if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 String username = usernameField.getText();
@@ -120,7 +121,7 @@ public class LoginMenu implements Menu, Screen, InputProcessor {
                     } else {
                         ;
                         messageLabel.setText(Language.LOGGED_IN_SUCCESSFULLY.languages[App.languageNumber]);
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                        ChangeMenuController.changeMenu(LoginMenu.this, new MainMenu());
                     }
                 }
             } else if (index == 2) {
@@ -134,7 +135,7 @@ public class LoginMenu implements Menu, Screen, InputProcessor {
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                    ChangeMenuController.changeMenu(LoginMenu.this, new MainMenu());
                 }
             }
         }

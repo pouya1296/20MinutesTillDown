@@ -25,12 +25,27 @@ public class GameDataManager {
     }
 
     public static List<Game> loadAllGames() {
+        File file = new File(FILE_PATH);
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                try (Writer writer = new FileWriter(FILE_PATH)) {
+                    gson.toJson(new ArrayList<Game>(), writer);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return new ArrayList<>();
+        }
+
         try (Reader reader = new FileReader(FILE_PATH)) {
             return gson.fromJson(reader, new TypeToken<List<Game>>() {}.getType());
         } catch (IOException e) {
             return new ArrayList<>();
         }
     }
+
 
     public static List<Game> getUserGames(String username) {
         List<Game> games = loadAllGames();

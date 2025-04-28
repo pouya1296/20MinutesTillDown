@@ -11,13 +11,12 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.Model.User;
 import org.example.Model.enums.Language;
-
-import static java.lang.foreign.MemorySegment.NULL;
-import static org.lwjgl.openal.ALC10.*;
+import org.example.controller.ChangeMenuController;
 
 
-public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
+public class StartMenu extends Game implements Menu, Screen, InputProcessor {
     private Stage stage;
     private Skin skin;
     private TextButton registerButton, loginButton, guestButton, exitButton;
@@ -51,21 +50,22 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
         registerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new RegisterMenu());
+                ChangeMenuController.changeMenu(StartMenu.this, new RegisterMenu());
             }
         });
 
         loginButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginMenu());
+                ChangeMenuController.changeMenu(StartMenu.this, new LoginMenu());
             }
         });
 
         guestButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameMenu());
+                App.currentUser = new User("guest", " ", " ", " ", App.getAvatarPath(), 0, 0, 0, true);
+                ChangeMenuController.changeMenu(StartMenu.this, new GameMenu(new org.example.Model.Game(App.currentUser)));
             }
         });
 
@@ -127,11 +127,13 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
             selectedIndex = (selectedIndex - 1 + 4) % 4;
         } else if (keycode == Input.Keys.ENTER) {
             if (selectedIndex == 0) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new RegisterMenu());
+                ChangeMenuController.changeMenu(StartMenu.this, new RegisterMenu());
             } else if (selectedIndex == 1) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoginMenu());
+                ChangeMenuController.changeMenu(StartMenu.this, new LoginMenu());
             } else if (selectedIndex == 2) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameMenu());
+                App.currentUser = new User("guest", " ", " ", " ", App.getAvatarPath(), 0, 0, 0, true);
+                App.currentGame = new org.example.Model.Game(App.currentUser);
+                ChangeMenuController.changeMenu(StartMenu.this, App.currentGame.gameMenu);
             } else {
                 System.exit(0);
             }
@@ -163,10 +165,12 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
     public void hide() {
@@ -181,17 +185,37 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor  {
     }
 
     @Override
-    public boolean keyUp(int keycode) { return false; }
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
     @Override
-    public boolean keyTyped(char character) { return false; }
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) { return false; }
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
     @Override
-    public boolean mouseMoved(int screenX, int screenY) { return false; }
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
     @Override
-    public boolean scrolled(float amountX, float amountY) { return false; }
+    public boolean scrolled(float amountX, float amountY) {
+        return false;
+    }
 }

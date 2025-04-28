@@ -30,7 +30,7 @@ public class DatabaseManager {
                         rs.getString("avatarPath"),
                         rs.getInt("score"),
                         rs.getInt("survivalTime"),
-                        rs.getInt("totalKills")
+                        rs.getInt("totalKills"), false
                 );
             } else {
                 return null;
@@ -109,7 +109,7 @@ public class DatabaseManager {
                         rs.getString("avatarPath"),
                         rs.getInt("score"),
                         rs.getInt("survivalTime"),
-                        rs.getInt("totalKills")
+                        rs.getInt("totalKills"), false
                 ));
             }
         } catch (Exception e) {

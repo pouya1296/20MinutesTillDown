@@ -5,11 +5,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.example.Model.App;
 import org.example.Model.User;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.DatabaseManager;
 
 import java.sql.SQLException;
@@ -90,18 +96,18 @@ public class ScoreboardMenu implements Screen, InputProcessor {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(ScoreboardMenu.this, new MainMenu());
             }
         });
     }
 
 
     private void createScoreboardButtons() {
-        sortByScoreButton = new TextButton("Sort by Score", skin);
-        sortByUsernameButton = new TextButton("Sort by Username", skin);
-        sortByKillsButton = new TextButton("Sort by Kills", skin);
-        sortBySurvivalTimeButton = new TextButton("Sort by Survival Time", skin);
-        backButton = new TextButton("Back to Main Menu", skin);
+        sortByScoreButton = new TextButton(Language.SORT_BY_SCORE.languages[App.languageNumber], skin);
+        sortByUsernameButton = new TextButton(Language.SORT_BY_USERNAME.languages[App.languageNumber], skin);
+        sortByKillsButton = new TextButton(Language.SORT_BY_KILLS.languages[App.languageNumber], skin);
+        sortBySurvivalTimeButton = new TextButton(Language.SORT_BY_SURVIVAL_TIME.languages[App.languageNumber], skin);
+        backButton = new TextButton(Language.BACK_TO_MAIN_MENU.languages[App.languageNumber], skin);
     }
 
     private Table createTable() {
@@ -160,7 +166,7 @@ public class ScoreboardMenu implements Screen, InputProcessor {
                     throw new RuntimeException(e);
                 }
             } else if (index == 4) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(ScoreboardMenu.this, new MainMenu());
             }
             updateSelection();
             return true;
@@ -172,25 +178,25 @@ public class ScoreboardMenu implements Screen, InputProcessor {
     private void sortUsersByScore() throws SQLException {
         List<User> users = DatabaseManager.getAllUsers();
         users.sort((u1, u2) -> Integer.compare(u2.getScore(), u1.getScore()));
-        ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreboardDisplay(users));
+        ChangeMenuController.changeMenu(ScoreboardMenu.this, new ScoreboardDisplay(users));
     }
 
     private void sortUsersByUsername() throws SQLException {
         List<User> users = DatabaseManager.getAllUsers();
         users.sort((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()));
-        ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreboardDisplay(users));
+        ChangeMenuController.changeMenu(ScoreboardMenu.this, new ScoreboardDisplay(users));
     }
 
     private void sortUsersByKills() throws SQLException {
         List<User> users = DatabaseManager.getAllUsers();
         users.sort((u1, u2) -> Integer.compare(u2.getTotalKills(), u1.getTotalKills()));
-        ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreboardDisplay(users));
+        ChangeMenuController.changeMenu(ScoreboardMenu.this, new ScoreboardDisplay(users));
     }
 
     private void sortUsersBySurvivalTime() throws SQLException {
         List<User> users = DatabaseManager.getAllUsers();
         users.sort((u1, u2) -> Integer.compare(u2.getSurvivalTime(), u1.getSurvivalTime()));
-        ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreboardDisplay(users));
+        ChangeMenuController.changeMenu(ScoreboardMenu.this, new ScoreboardDisplay(users));
     }
 
 
@@ -207,10 +213,12 @@ public class ScoreboardMenu implements Screen, InputProcessor {
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
     public void hide() {

@@ -9,8 +9,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
-import org.example.Model.enums.Language;
 import org.example.Model.Response;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.DatabaseManager;
 import org.example.controller.RegisterMenuController;
 
@@ -68,7 +69,7 @@ public class ChangePassword implements Menu, Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE)
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
+            ChangeMenuController.changeMenu(ChangePassword.this, new ProfileMenu());
         if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 String password = passwordField.getText();
@@ -76,14 +77,14 @@ public class ChangePassword implements Menu, Screen, InputProcessor {
                 if (!passwordResponse.success) {
                     messageLabel.setText(passwordResponse.responseMessage);
                 } else {
-                    messageLabel.setText("password changed to: " + password);
+                    messageLabel.setText(Language.PASS_CHANGE.languages[App.languageNumber] + password);
                     App.currentUser.password = password;
                     try {
                         DatabaseManager.updateUser(App.currentUser);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new ProfileMenu());
+                    ChangeMenuController.changeMenu(ChangePassword.this, new ProfileMenu());
                 }
             }
         }

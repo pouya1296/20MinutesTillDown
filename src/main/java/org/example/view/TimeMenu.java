@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.controller.ChangeMenuController;
 
 public class TimeMenu implements Screen, InputProcessor {
     private Stage stage;
@@ -74,7 +75,7 @@ public class TimeMenu implements Screen, InputProcessor {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+                ChangeMenuController.changeMenu(TimeMenu.this, new PreGameMenu());
             }
         });
 
@@ -129,7 +130,7 @@ public class TimeMenu implements Screen, InputProcessor {
             } else if (index == 3) {
                 App.currentUser.time = 1200;
             } else {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new PreGameMenu());
+                ChangeMenuController.changeMenu(TimeMenu.this, new PreGameMenu());
             }
             updateTimeDisplay();
         }

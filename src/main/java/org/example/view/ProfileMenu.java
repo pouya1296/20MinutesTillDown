@@ -5,11 +5,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.example.Model.App;
+import org.example.Model.enums.Language;
+import org.example.controller.ChangeMenuController;
 import org.example.controller.DatabaseManager;
 
 import java.sql.SQLException;
@@ -46,14 +51,14 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
         changeUsernameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ChangeUsername());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new ChangeUsername());
             }
         });
 
         changePasswordButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ChangePassword());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new ChangePassword());
             }
         });
 
@@ -66,21 +71,21 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
                     throw new RuntimeException(e);
                 }
                 App.currentUser = null;
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new StartMenu());
             }
         });
 
         changeAvatarButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new AvatarMenu());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new AvatarMenu());
             }
         });
 
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new MainMenu());
             }
         });
     }
@@ -92,11 +97,11 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
     }
 
     private void createProfileButtons() {
-        changeUsernameButton = new TextButton("Change Username", skin);
-        changePasswordButton = new TextButton("Change Password", skin);
-        deleteAccountButton = new TextButton("Delete Account", skin);
-        changeAvatarButton = new TextButton("Change Avatar", skin);
-        backButton = new TextButton("Back to Main Menu", skin);
+        changeUsernameButton = new TextButton(Language.CHANGE_USERNAME.languages[App.languageNumber], skin);
+        changePasswordButton = new TextButton(Language.CHANGE_PASSWORD.languages[App.languageNumber], skin);
+        deleteAccountButton = new TextButton(Language.DELETE_ACCOUNT.languages[App.languageNumber], skin);
+        changeAvatarButton = new TextButton(Language.CHANGE_AVATAR.languages[App.languageNumber], skin);
+        backButton = new TextButton(Language.BACK_TO_MAIN_MENU.languages[App.languageNumber], skin);
     }
 
     private Table createTable() {
@@ -131,9 +136,9 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
             index = (index - 1 + 5) % 5;
         } else if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ChangeUsername());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new ChangeUsername());
             } else if (index == 1) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ChangePassword());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new ChangePassword());
             } else if (index == 2) {
                 try {
                     DatabaseManager.deleteUser(App.currentUser.username);
@@ -141,11 +146,11 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
                     throw new RuntimeException(e);
                 }
                 App.currentUser = null;
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new StartMenu());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new StartMenu());
             } else if (index == 3) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new AvatarMenu());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new AvatarMenu());
             } else if (index == 4) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ChangeMenuController.changeMenu(ProfileMenu.this, new MainMenu());
             }
             updateSelection();
             return true;
@@ -167,10 +172,12 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
     public void hide() {

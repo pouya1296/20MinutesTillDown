@@ -26,15 +26,16 @@ public class User {
     public Hero hero;
     public Weapon weapon;
     public int time;
+    public boolean isGuest;
 
-    public User(String username, String password, String question, String answer, String avatarPath, int score, int survivalTime, int totalKills) {
+    public User(String username, String password, String question, String answer, String avatarPath, int score, int survivalTime, int totalKills, boolean isGuest) {
         this.username = username;
         this.password = password;
         this.question = question;
         this.answer = answer;
         this.avatarPath = avatarPath;
         texture = new Texture(Gdx.files.internal(avatarPath));
-        this.score = 0;
+        this.score = score;
         this.survivalTime = survivalTime;
         this.totalKills = totalKills;
         this.grayScaleMode = false;
@@ -44,6 +45,7 @@ public class User {
         this.hero = Hero.SHANA;
         this.time = 120;
         this.weapon = Weapon.REVOLVER;
+        this.isGuest = isGuest;
     }
 
     private void InitializeKeys() {
@@ -54,6 +56,7 @@ public class User {
         keys.put("FIRE", Input.Keys.LEFT);
         keys.put("AUTO AIM", Input.Keys.SPACE);
         keys.put("RELOAD", Input.Keys.R);
+        keys.put("PAUSE", Input.Keys.P);
     }
 
     public String getUsername() {
