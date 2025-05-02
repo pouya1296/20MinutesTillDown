@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameDataManager {
-    private static final String FILE_PATH = "games.json";
+    private static final String FILE_PATH = "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\controller\\game.json";
     private static final Gson gson = new Gson();
 
     public static void saveGame(Game game) {
@@ -25,6 +25,7 @@ public class GameDataManager {
     }
 
     public static List<Game> loadAllGames() {
+
         File file = new File(FILE_PATH);
 
         if (!file.exists()) {

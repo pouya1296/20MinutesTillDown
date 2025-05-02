@@ -65,7 +65,8 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 App.currentUser = new User("guest", " ", " ", " ", App.getAvatarPath(), 0, 0, 0, true);
-                ChangeMenuController.changeMenu(StartMenu.this, new GameMenu(new org.example.Model.Game(App.currentUser)));
+                App.currentGame  = new org.example.Model.Game(App.currentUser);
+                ChangeMenuController.changeMenu(StartMenu.this, new GameMenu(App.currentGame));
             }
         });
 

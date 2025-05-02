@@ -71,8 +71,8 @@ public class PauseMenu implements Screen {
                 {
                     org.example.Model.Game game = App.currentGame;
                     User user = App.currentUser;
-                    if (user.time < game.time)
-                        user.time = game.time;
+                    if (user.time < (int)game.time)
+                        user.time = (int)game.time;
                     //score
                     user.totalKills += game.kills;
                     try {
@@ -151,11 +151,11 @@ public class PauseMenu implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-        if (App.currentGame.isBlackWhite) {
-            stage.getBatch().setShader(App.currentGame.blackAndWhiteShader);
-        } else {
+//        if (App.currentGame.isBlackWhite) {
+//            stage.getBatch().setShader(App.currentGame.blackAndWhiteShader);
+//        } else {
             stage.getBatch().setShader(null);
-        }
+   //     }
         stage.act(delta);
         stage.draw();
     }

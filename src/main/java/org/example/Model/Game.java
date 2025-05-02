@@ -21,11 +21,10 @@ public class Game {
     public ArrayList<Ability> abilities = new ArrayList<>();
     public org.example.Model.enums.Hero hero;
     public Weapon weapon;
-    public int time;
-    public int totalTime;
+    public float time;
+    public float totalTime;
     public int kills;
     public Ability currentAbility;
-    public ShaderProgram blackAndWhiteShader;
     public boolean isBlackWhite;
     public float x;
     public float y;
@@ -33,7 +32,9 @@ public class Game {
     public float height;
     public int hp;
     public int ammo;
-    public GameMenu gameMenu;
+    public transient GameMenu gameMenu;
+    public ArrayList<Enemy> enemies = new ArrayList<>();
+    public ArrayList<Tree> trees = new ArrayList<>();
 
 
     public Game(User user) {
@@ -56,8 +57,9 @@ public class Game {
         this.hp = hero.maxHP;
         this.ammo = weapon.maxAmmo;
         this.gameMenu = new GameMenu(this);
-        blackAndWhiteShader = new ShaderProgram(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\blackandwhite.glsl"),
-                Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\vertex.glsl"));
+
+//        blackAndWhiteShader = new ShaderProgram(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\blackandwhite.glsl"),
+//                Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\vertex.glsl"));
     }
 
     public void setKey(String direction, int keyCode) {

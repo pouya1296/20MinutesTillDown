@@ -52,14 +52,31 @@ public class KeyboardMenu implements Screen {
                     Gdx.input.setInputProcessor(new InputAdapter() {
                         @Override
                         public boolean keyDown(int keycode) {
-                            keys.put(entry.getKey(), keycode);
-                            keyField.setText(Input.Keys.toString(keycode));
-                            Gdx.input.setInputProcessor(stage);
+                            assignBinding(keycode);
                             return true;
+                        }
+                        @Override
+                        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                            assignBinding(button);
+                            return true;
+                        }
+                        private void assignBinding(int code) {
+                            keys.put(entry.getKey(), code);
+                            String name;
+                            if (code == Input.Buttons.LEFT) {
+                                name = "MOUSE_LEFT";
+                            } else if (code == Input.Buttons.RIGHT) {
+                                name = "MOUSE_RIGHT";
+                            } else {
+                                name = Input.Keys.toString(code);
+                            }
+                            keyField.setText(name);
+                            Gdx.input.setInputProcessor(stage);
                         }
                     });
                 }
             });
+
 
             table.add(actionLabel).pad(10);
             table.add(keyField).width(100).pad(10);
@@ -105,8 +122,6 @@ public class KeyboardMenu implements Screen {
 
     @Override
     public void hide() {
-        stage.dispose();
-        Gdx.input.setInputProcessor(null);
     }
 
     @Override

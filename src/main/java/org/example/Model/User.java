@@ -53,7 +53,7 @@ public class User {
         keys.put("DOWN", Input.Keys.S);
         keys.put("LEFT", Input.Keys.A);
         keys.put("RIGHT", Input.Keys.D);
-        keys.put("FIRE", Input.Keys.LEFT);
+        keys.put("FIRE", Input.Buttons.LEFT);
         keys.put("AUTO AIM", Input.Keys.SPACE);
         keys.put("RELOAD", Input.Keys.R);
         keys.put("PAUSE", Input.Keys.P);
