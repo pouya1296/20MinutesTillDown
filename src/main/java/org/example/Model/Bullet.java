@@ -1,7 +1,6 @@
 package org.example.Model;
 
 import com.badlogic.gdx.Gdx;
-import org.example.Model.enums.Weapon;
 
 public class Bullet {
     public float x, y;
@@ -18,12 +17,12 @@ public class Bullet {
         dy = (float) Math.sin(angle);
     }
 
-    public void update(float delta) {
+    public void update(float delta, Game game) {
         x += dx * speed * delta;
         y += dy * speed * delta;
 
 
-        if (x < 0 || x > Gdx.graphics.getWidth() || y < 0 || y > Gdx.graphics.getHeight()) {
+        if (x - game.x < -(float) Gdx.graphics.getWidth() /2 || -game.x + x > (float) Gdx.graphics.getWidth() /2 || -game.y + y < -(float) Gdx.graphics.getHeight() /2 || -game.y + y > (float) Gdx.graphics.getHeight() /2) {
             active = false;
         }
     }

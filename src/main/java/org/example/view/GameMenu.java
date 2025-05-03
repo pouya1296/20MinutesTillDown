@@ -59,8 +59,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         hudCamera.update();
-        if (batch == null)
-            batch = new SpriteBatch();
+
         if (font == null)
             font = new BitmapFont();
         this.hero = game.hero;
@@ -187,7 +186,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
-            bullet.update(delta);
+            bullet.update(delta, game);
             for (Tree tree : game.trees) {
                 if (bullet.x + 8 > tree.x && bullet.x < tree.x + 64 &&
                         bullet.y + 8 > tree.y && bullet.y < tree.y + 64) {
@@ -258,6 +257,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         update(delta);
         camera.position.set((game.x), (game.y), 0);
         camera.update();
+        batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         drawMobile();
@@ -291,11 +291,11 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     }
 
     private void drawMobile() {
-        for (int x = 0; x < 100; x++) {
-            for (int y = 0; y < 100; y++) {
+        for (int x = -49; x < 50; x++) {
+            for (int y = -49; y < 50; y++) {
                 float tileX = x * 64;
                 float tileY = y * 64;
-                if (map[x][y] == 0) {
+                if (map[x + 49][y + 49] == 0) {
                     batch.draw(tileTexture, tileX, tileY, 64, 64);
                 }
             }
