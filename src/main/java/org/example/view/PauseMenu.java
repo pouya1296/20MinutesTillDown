@@ -68,7 +68,7 @@ public class PauseMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (App.currentUser.isGuest)
                     ChangeMenuController.changeMenu(PauseMenu.this, new StartMenu());
-                {
+                else {
                     org.example.Model.Game game = App.currentGame;
                     User user = App.currentUser;
                     if (user.time < (int)game.time)
