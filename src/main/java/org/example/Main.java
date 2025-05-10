@@ -20,15 +20,7 @@ public class Main {
                 //TODO age khoda bekhad mishe
             }
         });
-        Lwjgl3Graphics.Monitor primary = Lwjgl3ApplicationConfiguration.getPrimaryMonitor();
-        if (primary == null) {
-            throw new IllegalStateException("No primary monitor detected!");
-        }
-        Lwjgl3Graphics.DisplayMode mode = Lwjgl3ApplicationConfiguration.getDisplayMode(primary);
-        if (mode == null) {
-            throw new IllegalStateException("Cannot query display mode for primary monitor!");
-        }
-        config.setFullscreenMode(mode);
+        config.setWindowedMode(2400, 1800);
         new Lwjgl3Application(new LanguageSelectionScreen(), config);
     }
 }

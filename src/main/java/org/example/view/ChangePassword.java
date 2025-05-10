@@ -17,7 +17,8 @@ import org.example.controller.RegisterMenuController;
 
 import java.sql.SQLException;
 
-public class ChangePassword implements Menu, Screen, InputProcessor {
+public class
+ChangePassword implements Menu, Screen, InputProcessor {
     private Stage stage;
     private Skin skin;
     private TextField passwordField;
@@ -28,7 +29,7 @@ public class ChangePassword implements Menu, Screen, InputProcessor {
 
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         createFields();
         Table table = createTable();
         createStage(table);
@@ -53,7 +54,7 @@ public class ChangePassword implements Menu, Screen, InputProcessor {
         table.center();
         table.add(messageLabel).colspan(2).padBottom(20);
         table.row();
-        table.add(passwordField).width(300).padBottom(20);
+        table.add(passwordField).width(500).padBottom(20);
         table.row();
         return table;
     }

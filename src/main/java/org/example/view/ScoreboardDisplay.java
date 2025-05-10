@@ -36,7 +36,7 @@ public class ScoreboardDisplay implements Screen {
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         table = new Table();
         table.setFillParent(true);
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\messi.jpg"));
@@ -99,7 +99,7 @@ public class ScoreboardDisplay implements Screen {
         });
 
         Table footer = new Table();
-        footer.add(backButton).size(250, 50).padTop(20);
+        footer.add(backButton).size(400, 100).padTop(20);
         table.row();
         table.add(footer).expand().bottom();
 

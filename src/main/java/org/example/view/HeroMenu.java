@@ -28,7 +28,7 @@ public class HeroMenu implements Screen, InputProcessor {
     public void show() {
         stage = new Stage(new ScreenViewport());
 
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\PreGame.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -51,17 +51,17 @@ public class HeroMenu implements Screen, InputProcessor {
         table.center();
         table.add(selectedHeroLabel).pad(10);
         table.row();
-        table.add(shanaButton).size(250, 50).pad(10);
+        table.add(shanaButton).size(400, 100).pad(10);
         table.row();
-        table.add(diamondButton).size(250, 50).pad(10);
+        table.add(diamondButton).size(400, 100).pad(10);
         table.row();
-        table.add(scarletButton).size(250, 50).pad(10);
+        table.add(scarletButton).size(400, 100).pad(10);
         table.row();
-        table.add(lilithButton).size(250, 50).pad(10);
+        table.add(lilithButton).size(400, 100).pad(10);
         table.row();
-        table.add(dasherButton).size(250, 50).pad(10);
+        table.add(dasherButton).size(400, 100).pad(10);
         table.row();
-        table.add(backButton).size(250, 50).pad(10);
+        table.add(backButton).size(400, 100).pad(10);
 
         stage.addActor(table);
         updateSelection();

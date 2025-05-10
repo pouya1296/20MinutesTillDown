@@ -31,7 +31,7 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
     @Override
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\mainMenu.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -139,19 +139,19 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(preGameButton).size(250, 50).pad(10);
+        table.add(preGameButton).size(400, 100).pad(10);
         table.row();
-        table.add(settingsButton).size(250, 50).pad(10);
+        table.add(settingsButton).size(400, 100).pad(10);
         table.row();
-        table.add(profileButton).size(250, 50).pad(10);
+        table.add(profileButton).size(400, 100).pad(10);
         table.row();
-        table.add(scoreboardButton).size(250, 50).pad(10);
+        table.add(scoreboardButton).size(400, 100).pad(10);
         table.row();
-        table.add(hintButton).size(250, 50).pad(10);
+        table.add(hintButton).size(400, 100).pad(10);
         table.row();
-        table.add(continueButton).size(250, 50).pad(10);
+        table.add(continueButton).size(400, 100).pad(10);
         table.row();
-        table.add(exitButton).size(250, 50).pad(10);
+        table.add(exitButton).size(400, 100).pad(10);
         return table;
     }
 

@@ -29,7 +29,7 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
 
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         createFields();
         Table table = createTable();
         createStage(table);
@@ -54,13 +54,13 @@ public class RegisterMenu implements Menu, Screen, InputProcessor {
         table.center();
         table.add(messageLabel).colspan(2).padBottom(20);
         table.row();
-        table.add(usernameField).width(300).padBottom(20);
+        table.add(usernameField).width(500).padBottom(20);
         table.row();
-        table.add(passwordField).width(300).padBottom(20);
+        table.add(passwordField).width(500).padBottom(20);
         table.row();
-        table.add(questionField).width(300).padBottom(20);
+        table.add(questionField).width(500).padBottom(20);
         table.row();
-        table.add(answerField).width(300).padBottom(20);
+        table.add(answerField).width(500).padBottom(20);
         return table;
     }
 

@@ -31,7 +31,7 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
     @Override
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\settingMenu.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -108,15 +108,15 @@ public class ProfileMenu implements Menu, Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(changeUsernameButton).size(250, 50).pad(10);
+        table.add(changeUsernameButton).size(400, 100).pad(10);
         table.row();
-        table.add(changePasswordButton).size(250, 50).pad(10);
+        table.add(changePasswordButton).size(400, 100).pad(10);
         table.row();
-        table.add(deleteAccountButton).size(250, 50).pad(10);
+        table.add(deleteAccountButton).size(400, 100).pad(10);
         table.row();
-        table.add(changeAvatarButton).size(250, 50).pad(10);
+        table.add(changeAvatarButton).size(400, 100).pad(10);
         table.row();
-        table.add(backButton).size(250, 50).pad(10);
+        table.add(backButton).size(400, 100).pad(10);
         return table;
     }
 

@@ -27,7 +27,7 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor {
     @Override
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\registerbackground.png"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -89,19 +89,19 @@ public class StartMenu extends Game implements Menu, Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(registerButton).size(200, 50).pad(10);
+        table.add(registerButton).size(400, 100).pad(10);
         table.row();
-        table.add(loginButton).size(200, 50).pad(10);
+        table.add(loginButton).size(400, 100).pad(10);
         table.row();
-        table.add(guestButton).size(200, 50).pad(10);
+        table.add(guestButton).size(400, 100).pad(10);
         table.row();
-        table.add(exitButton).size(200, 50).pad(10);
+        table.add(exitButton).size(400, 100).pad(10);
         return table;
     }
 
     private Table writeMyName() {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = skin.getFont("default-font");
+        labelStyle.font = skin.getFont("font");
         labelStyle.fontColor = Color.RED;
         Label bottomMessage = new Label("Pouya Astaraki", labelStyle);
         bottomMessage.setFontScale(2);

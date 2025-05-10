@@ -25,7 +25,7 @@ public class TimeMenu implements Screen, InputProcessor {
     public void show() {
         stage = new Stage(new ScreenViewport());
 
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\PreGame.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -84,15 +84,15 @@ public class TimeMenu implements Screen, InputProcessor {
         table.center();
         table.add(currentTimeLabel).colspan(2).padBottom(20);
         table.row();
-        table.add(twoMinutesButton).size(250, 50).pad(10);
+        table.add(twoMinutesButton).size(400, 100).pad(10);
         table.row();
-        table.add(fiveMinutesButton).size(250, 50).pad(10);
+        table.add(fiveMinutesButton).size(400, 100).pad(10);
         table.row();
-        table.add(tenMinutesButton).size(250, 50).pad(10);
+        table.add(tenMinutesButton).size(400, 100).pad(10);
         table.row();
-        table.add(thirtyMinutesButton).size(250, 50).pad(10);
+        table.add(thirtyMinutesButton).size(400, 100).pad(10);
         table.row();
-        table.add(backButton).size(250, 50).pad(10);
+        table.add(backButton).size(400, 100).pad(10);
 
         stage.addActor(table);
         updateSelection();

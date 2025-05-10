@@ -24,7 +24,7 @@ public class LanguageSelectionScreen extends Game implements Screen, InputProces
 
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         Label titleLabel = new Label("Select Language", skin);
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\registerbackground.png"));
         backgroundImage = new Image(backgroundTexture);
@@ -73,9 +73,9 @@ public class LanguageSelectionScreen extends Game implements Screen, InputProces
         table.center();
         table.add(titleLabel).colspan(2).padBottom(20);
         table.row();
-        table.add(englishButton).size(200, 50).pad(10);
+        table.add(englishButton).size(400, 100).pad(10);
         table.row();
-        table.add(frenchButton).size(200, 50).pad(10);
+        table.add(frenchButton).size(400, 100).pad(10);
         return table;
     }
 

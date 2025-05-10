@@ -28,7 +28,7 @@ public class PreGameMenu implements Screen, InputProcessor {
     public void show() {
         stage = new Stage(new ScreenViewport());
 
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\PreGame.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -45,15 +45,15 @@ public class PreGameMenu implements Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(heroMenuButton).size(250, 50).pad(10);
+        table.add(heroMenuButton).size(400, 100).pad(10);
         table.row();
-        table.add(weaponMenuButton).size(250, 50).pad(10);
+        table.add(weaponMenuButton).size(400, 100).pad(10);
         table.row();
-        table.add(timeMenuButton).size(250, 50).pad(10);
+        table.add(timeMenuButton).size(400, 100).pad(10);
         table.row();
-        table.add(newGameButton).size(250, 50).pad(10);
+        table.add(newGameButton).size(400, 100).pad(10);
         table.row();
-        table.add(backButton).size(250, 50).pad(10);
+        table.add(backButton).size(400, 100).pad(10);
 
         stage.addActor(table);
         updateSelection();

@@ -7,20 +7,22 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import org.example.Model.Bullet;
-import org.example.Model.Game;
-import org.example.Model.Tree;
+import org.example.Model.*;
+import org.example.Model.enums.Enemy;
 import org.example.Model.enums.Hero;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 
 public class GameMenu implements Menu, InputProcessor, Screen {
     public transient OrthographicCamera camera;
@@ -41,6 +43,8 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     public int currentReloadFrame = 0;
     public List<Bullet> bullets = new ArrayList<>();
     public Texture treeTexture;
+    public boolean autoReloadStart;
+    public Texture dropTexture;
 
     public enum WeaponState {IDLE, SHOOTING, RELOADING}
 
@@ -49,6 +53,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     public float reloadTimer = 0;
     public transient BitmapFont font;
     public transient Texture bulletTexture;
+    public Animation<TextureRegion> tentacleWalkAnimation;
 
     public GameMenu(Game game) {
         this.game = game;
@@ -59,7 +64,6 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         hudCamera.update();
-
         if (font == null)
             font = new BitmapFont();
         this.hero = game.hero;
@@ -93,6 +97,14 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             float y = (float) (Math.random() * 6400);
             game.trees.add(new Tree(x, y, "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_TreeMonster_0.png"));
         }
+        TextureRegion[] frames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++) {
+            Texture t = new Texture(Gdx.files.internal(org.example.Model.enums.Enemy.TENTACLE.texturePaths[i]));
+            frames[i] = new TextureRegion(t);
+        }
+        autoReloadStart = true;
+        tentacleWalkAnimation = new Animation<>(0.1F, frames);
+        dropTexture = new Texture(Gdx.files.internal(Enemy.TENTACLE.texturePaths[5]));
     }
 
     public void endGame() {
@@ -111,6 +123,136 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new PauseMenu());
         }
         isPlayerMoving = false;
+        handleInput(delta);
+        float playerSize = 32;
+        for (Tree tree : game.trees) {
+            if (game.x + playerSize > tree.x && game.x < tree.x + 64 &&
+                    game.y + playerSize > tree.y && game.y < tree.y + 64) {
+                game.x = saveX;
+                game.y = saveY;
+                break;
+            }
+        }
+        Iterator<Bullet> bulletIterator = bullets.iterator();
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            bullet.update(delta, game);
+            boolean hit = false;
+            for (Tree tree : game.trees) {
+                if (bullet.x + 8 > tree.x && bullet.x < tree.x + 64 &&
+                        bullet.y + 8 > tree.y && bullet.y < tree.y + 64) {
+                    bullet.active = false;
+                    break;
+                }
+            }
+            if (!hit) {
+                Iterator<org.example.Model.Enemy> enemyIt = game.enemies.iterator();
+                while (enemyIt.hasNext()) {
+                    org.example.Model.Enemy enemy = enemyIt.next();
+                    if (bullet.x + 4 > enemy.x && bullet.x < enemy.x + 64 &&
+                            bullet.y + 4 > enemy.y && bullet.y < enemy.y + 64) {
+
+                        enemy.hp -= game.weapon.damage;
+                        hit = true;
+                        if (enemy.hp <= 0) {
+                            game.drops.add(new Drop(enemy.x, enemy.y, enemy.dropPath));
+                            game.kills++;
+                            enemyIt.remove();
+                        }
+                        break;
+                    }
+                }
+            }
+            if (hit || !bullet.active) {
+                bulletIterator.remove();
+            }
+        }
+        Iterator<Drop> dropIt = game.drops.iterator();
+        Rectangle playerRect = new Rectangle(game.x, game.y, 10, 10);
+        while (dropIt.hasNext()) {
+            Drop drop = dropIt.next();
+            if (!drop.collected && drop.bounds.overlaps(playerRect)) {
+                drop.collected = true;
+                game.kills++;
+                game.xp += Drop.XP_VALUE;
+                dropIt.remove();
+            }
+        }
+
+        game.enemySpawnTimer += delta;
+        tentacleSpawn();
+
+        for (org.example.Model.Enemy m : game.enemies) {
+            m.update(delta, game);
+        }
+
+
+    }
+
+    private void tentacleSpawn() {
+        if (game.enemySpawnTimer >= 3.0f) {
+            game.enemySpawnTimer -= 3.0f;
+            float remaining = Math.max(0, game.totalTime - game.time);
+            int spawnCount = (int) (remaining / 30f);
+
+            for (int s = 0; s < spawnCount; s++) {
+                int edge = (int) (Math.random() * 4);
+                float sx = 0, sy = 0;
+                if (edge == 0) {
+                    sx = (float) Math.random() * Gdx.graphics.getWidth();
+                    sy = Gdx.graphics.getHeight() + 32;
+                } else if (edge == 1) {
+                    sx = (float) Math.random() * Gdx.graphics.getWidth();
+                    sy = -32;
+                } else if (edge == 2) {
+                    sx = -32;
+                    sy = (float) Math.random() * Gdx.graphics.getHeight();
+                } else {
+                    sx = Gdx.graphics.getWidth() + 32;
+                    sy = (float) Math.random() * Gdx.graphics.getHeight();
+                }
+                float wx = sx + game.x - Gdx.graphics.getWidth() / 2;
+                float wy = sy + game.y - Gdx.graphics.getHeight() / 2;
+                game.enemies.add(new TentacleMonster(
+                        wx, wy,
+                        Enemy.TENTACLE.texturePaths,
+                        Enemy.TENTACLE.hp));
+            }
+        }
+    }
+
+    private void handleInput(float delta) {
+        if (weaponState != WeaponState.RELOADING) {
+            if (Gdx.input.isKeyJustPressed(keys.get("FIRE")) || Gdx.input.isButtonJustPressed(keys.get("FIRE")) && game.ammo > 0) {
+                weaponState = WeaponState.SHOOTING;
+                game.ammo -= 1;
+                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                camera.unproject(mousePos);
+                bullets.add(new Bullet(game.x + 10, game.y + 10, mousePos.x, mousePos.y));
+            } else {
+                weaponState = WeaponState.IDLE;
+            }
+        }
+
+        if ((Gdx.input.isKeyJustPressed(keys.get("RELOAD")) && game.ammo < maxAmmo) || (game.ammo == 0 && game.autoReload && autoReloadStart)) {
+            weaponState = WeaponState.RELOADING;
+            reloadTimer = 0;
+            currentReloadFrame = 0;
+            autoReloadStart = false;
+        }
+        if (weaponState == WeaponState.RELOADING) {
+            reloadTimer += Gdx.graphics.getDeltaTime();
+            if (reloadTimer > game.weapon.reloadTime / weaponReloadTextures.length) {
+                reloadTimer = 0;
+                if (currentReloadFrame < weaponReloadTextures.length - 1) {
+                    currentReloadFrame++;
+                } else {
+                    weaponState = WeaponState.IDLE;
+                    game.ammo = maxAmmo;
+                    autoReloadStart = true;
+                }
+            }
+        }
         if (Gdx.input.isKeyPressed(keys.get("UP")) && Gdx.input.isKeyPressed(keys.get("LEFT"))) {
             game.x -= speed * delta;
             game.y += speed * delta;
@@ -145,59 +287,6 @@ public class GameMenu implements Menu, InputProcessor, Screen {
                 isPlayerMoving = true;
             }
         }
-        if (weaponState != WeaponState.RELOADING) {
-            if (Gdx.input.isKeyJustPressed(keys.get("FIRE")) || Gdx.input.isButtonJustPressed(keys.get("FIRE")) && game.ammo > 0) {
-                weaponState = WeaponState.SHOOTING;
-                game.ammo -= 1;
-                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-                camera.unproject(mousePos);
-                bullets.add(new Bullet(game.x + 10, game.y + 10, mousePos.x, mousePos.y));
-            } else {
-                weaponState = WeaponState.IDLE;
-            }
-        }
-
-        if ((Gdx.input.isKeyJustPressed(keys.get("RELOAD")) && game.ammo < maxAmmo) || (game.ammo == 0 && game.autoReload)) {
-            weaponState = WeaponState.RELOADING;
-            reloadTimer = 0;
-            currentReloadFrame = 0;
-        }
-        if (weaponState == WeaponState.RELOADING) {
-            reloadTimer += Gdx.graphics.getDeltaTime();
-            if (reloadTimer > game.weapon.reloadTime / weaponReloadTextures.length) {
-                reloadTimer = 0;
-                if (currentReloadFrame < weaponReloadTextures.length - 1) {
-                    currentReloadFrame++;
-                } else {
-                    weaponState = WeaponState.IDLE;
-                    game.ammo = maxAmmo;
-                }
-            }
-        }
-        float playerSize = 32;
-        for (Tree tree : game.trees) {
-            if (game.x + playerSize > tree.x && game.x < tree.x + 64 &&
-                    game.y + playerSize > tree.y && game.y < tree.y + 64) {
-                game.x = saveX;
-                game.y = saveY;
-                break;
-            }
-        }
-        Iterator<Bullet> bulletIterator = bullets.iterator();
-        while (bulletIterator.hasNext()) {
-            Bullet bullet = bulletIterator.next();
-            bullet.update(delta, game);
-            for (Tree tree : game.trees) {
-                if (bullet.x + 8 > tree.x && bullet.x < tree.x + 64 &&
-                        bullet.y + 8 > tree.y && bullet.y < tree.y + 64) {
-                    bullet.active = false;
-                    break;
-                }
-            }
-            if (!bullet.active)
-                bulletIterator.remove();
-        }
-
     }
 
     @Override
@@ -261,7 +350,6 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         drawMobile();
-
         hudCamera.update();
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
@@ -316,6 +404,14 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         batch.draw(currentWeaponTexture, game.x + 7, game.y + 7);
         for (Bullet bullet : bullets) {
             batch.draw(bulletTexture, bullet.x, bullet.y, 8, 8);
+        }
+        for (org.example.Model.Enemy m : game.enemies) {
+            Animation<TextureRegion> animation = tentacleWalkAnimation;
+            m.render(batch, animation);
+        }
+        for (Drop drop : game.drops) {
+            drop.updateBounds();
+            drop.render(batch, dropTexture);
         }
         batch.end();
     }

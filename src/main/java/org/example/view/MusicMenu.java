@@ -28,7 +28,7 @@ public class MusicMenu implements Screen, InputProcessor {
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\settingMenu.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -118,21 +118,21 @@ public class MusicMenu implements Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(track1Button).size(250, 50).pad(10);
+        table.add(track1Button).size(400, 100).pad(10);
         table.row();
-        table.add(track2Button).size(250, 50).pad(10);
+        table.add(track2Button).size(400, 100).pad(10);
         table.row();
-        table.add(track3Button).size(250, 50).pad(10);
+        table.add(track3Button).size(400, 100).pad(10);
         table.row();
-        table.add(track4Button).size(250, 50).pad(10);
+        table.add(track4Button).size(400, 100).pad(10);
         table.row();
-        table.add(track5Button).size(250, 50).pad(10);
+        table.add(track5Button).size(400, 100).pad(10);
         table.row();
-        table.add(track6Button).size(250, 50).pad(10);
+        table.add(track6Button).size(400, 100).pad(10);
         table.row();
-        table.add(track7Button).size(250, 50).pad(10);
+        table.add(track7Button).size(400, 100).pad(10);
         table.row();
-        table.add(backButton).size(250, 50).pad(10);
+        table.add(backButton).size(400, 100).pad(10);
         return table;
     }
 

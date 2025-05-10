@@ -29,7 +29,7 @@ public class PauseMenu implements Screen {
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pauseMenu.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -92,20 +92,22 @@ public class PauseMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (App.currentUser.isGuest)
                     ChangeMenuController.changeMenu(PauseMenu.this, new StartMenu());
-                org.example.Model.Game game = App.currentGame;
-                GameDataManager.saveGame(game);
-                ChangeMenuController.changeMenu(PauseMenu.this, new PreGameMenu());
+                else {
+                    org.example.Model.Game game = App.currentGame;
+                    GameDataManager.saveGame(game);
+                    ChangeMenuController.changeMenu(PauseMenu.this, new PreGameMenu());
+                }
             }
         });
 
         buttonTable.row();
-        buttonTable.add(resumeButton).size(300, 50).padBottom(10);
+        buttonTable.add(resumeButton).size(400, 100).padBottom(10);
         buttonTable.row();
-        buttonTable.add(blackWhiteButton).size(300, 50).padBottom(10);
+        buttonTable.add(blackWhiteButton).size(400, 100).padBottom(10);
         buttonTable.row();
-        buttonTable.add(giveUpButton).size(300, 50).padBottom(10);
+        buttonTable.add(giveUpButton).size(400, 100).padBottom(10);
         buttonTable.row();
-        buttonTable.add(saveExitButton).size(300, 50).padBottom(10);
+        buttonTable.add(saveExitButton).size(400, 100).padBottom(10);
 
         stage.addActor(table);
         stage.addActor(buttonTable);

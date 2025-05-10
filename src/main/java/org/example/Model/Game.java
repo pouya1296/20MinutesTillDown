@@ -2,9 +2,7 @@ package org.example.Model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import org.example.Model.enums.Ability;
-import org.example.Model.enums.Hero;
 import org.example.Model.enums.Weapon;
 import org.example.view.GameMenu;
 
@@ -32,9 +30,14 @@ public class Game {
     public float height;
     public int hp;
     public int ammo;
+    public float enemySpawnTimer = 0;
+    public float enemySpawnInterval = 2.0f;
+    public float enemySpeed = 10;
     public transient GameMenu gameMenu;
-    public ArrayList<Enemy> enemies = new ArrayList<>();
-    public ArrayList<Tree> trees = new ArrayList<>();
+    public  ArrayList<Enemy> enemies = new ArrayList<>();
+    public  ArrayList<Tree> trees = new ArrayList<>();
+    public ArrayList<Drop> drops = new ArrayList<>();
+    public int xp;
 
 
     public Game(User user) {
@@ -57,6 +60,7 @@ public class Game {
         this.hp = hero.maxHP;
         this.ammo = weapon.maxAmmo;
         this.gameMenu = new GameMenu(this);
+        this.xp = 0;
 
 //        blackAndWhiteShader = new ShaderProgram(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\blackandwhite.glsl"),
 //                Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\vertex.glsl"));

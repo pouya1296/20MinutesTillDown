@@ -28,7 +28,7 @@ public class WeaponMenu implements Screen, InputProcessor {
     public void show() {
         stage = new Stage(new ScreenViewport());
 
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\PreGame.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -49,13 +49,13 @@ public class WeaponMenu implements Screen, InputProcessor {
         table.center();
         table.add(selectedWeaponLabel).pad(10);
         table.row();
-        table.add(revolverButton).size(250, 50).pad(10);
+        table.add(revolverButton).size(400, 100).pad(10);
         table.row();
-        table.add(shotgunButton).size(250, 50).pad(10);
+        table.add(shotgunButton).size(400, 100).pad(10);
         table.row();
-        table.add(smgDualButton).size(250, 50).pad(10);
+        table.add(smgDualButton).size(400, 100).pad(10);
         table.row();
-        table.add(backButton).size(250, 50).pad(10);
+        table.add(backButton).size(400, 100).pad(10);
 
         stage.addActor(table);
         updateSelection();

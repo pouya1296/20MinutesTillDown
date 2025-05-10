@@ -32,7 +32,7 @@ public class KeyboardMenu implements Screen {
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\settingMenu.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -93,7 +93,7 @@ public class KeyboardMenu implements Screen {
         });
 
         table.row();
-        table.add(backButton).size(250, 50).padTop(20);
+        table.add(backButton).size(400, 100).padTop(20);
         stage.addActor(table);
 
         Gdx.input.setInputProcessor(stage);

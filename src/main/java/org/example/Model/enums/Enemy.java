@@ -9,5 +9,7 @@ public enum Enemy {
     public int hp;
 
     Enemy(String[] strings, int i) {
+        texturePaths = strings;
+        hp = i;
     }
 }

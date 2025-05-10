@@ -77,30 +77,30 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
     private Table createTable() {
         Table table = new Table();
         table.setFillParent(true);
-        table.center();
-        table.add(soundEffectCheckBox).size(250, 50).pad(10);
+        table.top();
+        table.add(soundEffectCheckBox).size(600, 70).pad(10);
         table.row();
-        table.add(autoReloadCheckBox).size(250, 50).pad(10);
+        table.add(autoReloadCheckBox).size(600, 70).pad(10);
         table.row();
-        table.add(grayscaleCheckBox).size(250, 50).pad(10);
+        table.add(grayscaleCheckBox).size(600, 70).pad(10);
         table.row();
-        table.add(musicOnOffButton).size(250, 50).pad(10);
+        table.add(musicOnOffButton).size(600, 70).pad(10);
         table.row();
-        table.add(musicTrackButton).size(250, 50).pad(10);
+        table.add(musicTrackButton).size(600, 70).pad(10);
         table.row();
-        table.add(soundEffectButton).size(250, 50).pad(10);
+        table.add(soundEffectButton).size(600, 70).pad(10);
         table.row();
-        table.add(keyboardControlButton).size(250, 50).pad(10);
+        table.add(keyboardControlButton).size(600, 70).pad(10);
         table.row();
-        table.add(autoReloadButton).size(250, 50).pad(10);
+        table.add(autoReloadButton).size(600, 70).pad(10);
         table.row();
-        table.add(grayscaleButton).size(250, 50).pad(10);
+        table.add(grayscaleButton).size(600, 70).pad(10);
         table.row();
-        table.add(volumeButton).size(250, 50).pad(10);
+        table.add(volumeButton).size(600, 70).pad(10);
         table.row();
-        table.add(volumeSlider).size(250, 50).pad(10);
+        table.add(volumeSlider).size(600, 70).pad(10);
         table.row();
-        table.add(backButton).size(250, 50).pad(10);
+        table.add(backButton).size(600, 70).pad(10);
         table.row();
 
         return table;
@@ -237,7 +237,7 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
     @Override
     public void handleMenu() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\settingMenu.jpg"));
         backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);

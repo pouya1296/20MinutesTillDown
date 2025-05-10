@@ -32,7 +32,7 @@ public class ScoreboardMenu implements Screen, InputProcessor {
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\uiskin.json"));
+        skin = new Skin(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\pixthulhu\\skin\\pixthulhu-ui.json"));
         createScoreboardButtons();
         Table table = createTable();
         backgroundTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\messi.jpg"));
@@ -114,15 +114,15 @@ public class ScoreboardMenu implements Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(sortByScoreButton).size(250, 50).pad(10);
+        table.add(sortByScoreButton).size(400, 100).pad(10);
         table.row();
-        table.add(sortByUsernameButton).size(250, 50).pad(10);
+        table.add(sortByUsernameButton).size(400, 100).pad(10);
         table.row();
-        table.add(sortByKillsButton).size(250, 50).pad(10);
+        table.add(sortByKillsButton).size(400, 100).pad(10);
         table.row();
-        table.add(sortBySurvivalTimeButton).size(250, 50).pad(10);
+        table.add(sortBySurvivalTimeButton).size(400, 100).pad(10);
         table.row();
-        table.add(backButton).size(250, 50).pad(10);
+        table.add(backButton).size(400, 100).pad(10);
         return table;
     }
 
