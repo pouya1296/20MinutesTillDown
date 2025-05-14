@@ -1,5 +1,7 @@
 package org.example.Model;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,13 +26,12 @@ public class Enemy {
     }
 
     public void render(SpriteBatch batch,Animation<TextureRegion> walkAnimation) {
-        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-        batch.draw(currentFrame, x, y);
+            TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+            batch.draw(currentFrame, x, y);
     }
 
     public void update(float delta, Game game) {
         stateTime += delta;
-        if(this instanceof TentacleMonster) {
             float dx = game.x - this.x;
             float dy = game.y - this.y;
             float dist = (float) Math.sqrt(dx * dx + dy * dy);
@@ -38,6 +39,5 @@ public class Enemy {
                 this.x += (dx / dist) * game.enemySpeed * delta;
                 this.y += (dy / dist) * game.enemySpeed * delta;
             }
-        }
         }
 }

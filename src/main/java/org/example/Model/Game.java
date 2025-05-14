@@ -2,6 +2,7 @@ package org.example.Model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import org.example.Model.enums.Ability;
 import org.example.Model.enums.Weapon;
 import org.example.view.GameMenu;
@@ -39,10 +40,21 @@ public class Game {
     public ArrayList<Drop> drops = new ArrayList<>();
     public int xp;
     public float invincibleTimer;
-
+    public boolean elderSpawn;
+    public float elderDashTimer;
+    public boolean shieldActive;
+    public float shieldHalfWidth;
+    public float shieldHalfHeight;
+    public float shieldShrinkSpeed = 5f;
+    public transient ShapeRenderer shieldRenderer;
 
     public Game(User user) {
+        this.shieldHalfWidth = Gdx.graphics.getWidth() / 2f + 20;
+        this.shieldHalfHeight = Gdx.graphics.getHeight() / 2f + 20;
+        this.shieldRenderer = new ShapeRenderer();
+        this.shieldActive = false;
         this.invincibleTimer = 0f;
+        this.elderDashTimer = 0f;
         this.grayScaleMode = user.grayScaleMode;
         this.autoReload = user.autoReload;
         this.soundEffect = user.soundEffect;
@@ -63,7 +75,7 @@ public class Game {
         this.ammo = weapon.maxAmmo;
         this.gameMenu = new GameMenu(this);
         this.xp = 0;
-
+        this.elderSpawn = false;
 //        blackAndWhiteShader = new ShaderProgram(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\blackandwhite.glsl"),
 //                Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\vertex.glsl"));
     }

@@ -57,6 +57,7 @@ public class User {
         keys.put("AUTO AIM", Input.Keys.SPACE);
         keys.put("RELOAD", Input.Keys.R);
         keys.put("PAUSE", Input.Keys.P);
+        keys.put("TIME_CHEAT", Input.Keys.NUM_1);
     }
 
     public String getUsername() {

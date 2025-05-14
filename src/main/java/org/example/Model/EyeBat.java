@@ -6,4 +6,9 @@ public class EyeBat extends Enemy {
         super(x, y, texturePath, hp, org.example.Model.enums.Enemy.EYE_BAT.texturePaths[4]);
         shootTimer = 0f;
     }
+
+    @Override
+    public void update(float delta, Game game) {
+        stateTime += delta;
+    }
 }

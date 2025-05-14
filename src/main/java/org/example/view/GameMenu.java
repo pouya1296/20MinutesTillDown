@@ -91,9 +91,9 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             weaponReloadTextures[i - 1] = new Texture(Gdx.files.internal(game.weapon.paths[i]));
         }
         treeTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_TreeMonster_0.png"));
-        for (int i = 5; i < 70; i++) {
-            float x = (float) (Math.random() * 6400);
-            float y = (float) (Math.random() * 6400);
+        for (int i = 0; i < 70; i++) {
+            float x = 5f + (float) (Math.random() * 6400);
+            float y = 5f +(float) (Math.random() * 6400);
             game.trees.add(new Tree(x, y, "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_TreeMonster_0.png"));
         }
         TextureRegion[] tentacleFrames = new TextureRegion[4];
@@ -116,8 +116,12 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     }
 
     public void update(float delta) {
+        if(Gdx.input.isKeyJustPressed(keys.get("TIME_CHEAT"))) {
+            game.time += 60;
+        }
         game.time += delta;
         int saveHp = game.hp;
+        game.elderDashTimer += delta;
 
         if (game.invincibleTimer > 0f) {
             game.invincibleTimer -= delta;
@@ -134,6 +138,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             //((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new PauseMenu());
             ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new PauseMenu());
         }
+
         isPlayerMoving = false;
         handleInput(delta);
         float playerSize = (float) idlePlayerTexture.getHeight() / 2;
@@ -144,6 +149,8 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         GameMenuController.tentacleSpawn(game);
         eyebatSpawnTimer = GameMenuController.eyebatSpawn(delta, game, eyebatSpawnTimer);
         GameMenuController.eyeBatShoot(delta, game, eyebatBullets);
+        GameMenuController.elderSpawn(game);
+        GameMenuController.shieldHandle(game, delta, camera);
 
         for (org.example.Model.Enemy enemy : game.enemies) {
             enemy.update(delta, game);
@@ -264,6 +271,20 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         hpBarRenderer.end();
         font.setColor(Color.BLUE);
         font.getData().setScale(2);
+        if (game.shieldActive) {
+            game.shieldRenderer.setProjectionMatrix(hudCamera.combined);
+            game.shieldRenderer.begin(ShapeRenderer.ShapeType.Line);
+            game.shieldRenderer.setColor(Color.CYAN);
+            float cx = Gdx.graphics.getWidth() / 2f;
+            float cy = Gdx.graphics.getHeight() / 2f;
+            game.shieldRenderer.rect(
+                    cx - game.shieldHalfWidth,
+                    cy - game.shieldHalfHeight,
+                    game.shieldHalfWidth * 2,
+                    game.shieldHalfHeight * 2
+            );
+            game.shieldRenderer.end();
+        }
 
     }
 
@@ -310,6 +331,8 @@ public class GameMenu implements Menu, InputProcessor, Screen {
                 m.render(batch, tentacleWalkAnimation);
             else if (m instanceof EyeBat)
                 m.render(batch, eyebatAnimation);
+            else
+                m.render(batch, null);
         }
         for (Drop drop : game.drops) {
             drop.updateBounds();

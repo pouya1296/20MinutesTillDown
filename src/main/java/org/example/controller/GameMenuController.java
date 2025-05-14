@@ -1,10 +1,12 @@
 package org.example.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import org.example.Model.*;
 import org.example.Model.enums.Enemy;
 
@@ -111,6 +113,21 @@ public class GameMenuController {
                             break;
                         }
                     }
+                    else if(enemy instanceof Elder){
+                        if (bullet.x + 4 > enemy.x && bullet.x < enemy.x + 100 &&
+                                bullet.y + 4 > enemy.y && bullet.y < enemy.y + 100) {
+
+                            enemy.hp -= game.weapon.damage;
+                            hit = true;
+                            if (enemy.hp <= 0) {
+                                game.drops.add(new Drop(enemy.x, enemy.y, enemy.dropPath));
+                                game.kills++;
+                                game.shieldActive = false;
+                                enemyIt.remove();
+                            }
+                            break;
+                        }
+                    }
 
                 }
             }
@@ -204,7 +221,7 @@ public class GameMenuController {
             return 0f;
 
         if (eyebatSpawnTimer + delta >= 10f) {
-            int count = Math.max(0, (int) (4 * game.time - game.totalTime + 30) / 30);
+            int count = Math.max(0, (int) (4 * game.time - game.totalTime + 30) / 60);
             for (int k = 0; k < count; k++) {
                 int edge = (int) (Math.random() * 4);
                 float sx = 0, sy = 0;
@@ -260,4 +277,60 @@ public class GameMenuController {
         }
 
     }
-}
+
+    public static void elderSpawn(Game game) {
+        if (game.time < game.totalTime / 2f)
+            return;
+        if(game.elderSpawn)
+            return;
+        game.elderSpawn = true;
+        game.shieldActive =true;
+                int edge = (int) (Math.random() * 4);
+                float sx = 0, sy = 0;
+                if (edge == 0) {
+                    sx = (float) Math.random() * Gdx.graphics.getWidth();
+                    sy = Gdx.graphics.getHeight() + 32;
+                } else if (edge == 1) {
+                    sx = (float) Math.random() * Gdx.graphics.getWidth();
+                    sy = -32;
+                } else if (edge == 2) {
+                    sx = -32;
+                    sy = (float) Math.random() * Gdx.graphics.getHeight();
+                } else {
+                    sx = Gdx.graphics.getWidth() + 32;
+                    sy = (float) Math.random() * Gdx.graphics.getHeight();
+                }
+                float wx = sx + game.x - Gdx.graphics.getWidth() / 2;
+                float wy = sy + game.y - Gdx.graphics.getHeight() / 2;
+                game.enemies.add(new Elder(
+                        wx, wy,
+                        Enemy.ELDER.texturePaths,
+                        Enemy.ELDER.hp));
+        }
+
+    public static void shieldHandle(Game game, float delta, Camera camera) {
+//        if (game.shieldActive) {
+//            game.shieldHalfWidth  = Math.max(0, game.shieldHalfWidth  - game.shieldShrinkSpeed * delta);
+//            game.shieldHalfHeight = Math.max(0, game.shieldHalfHeight - game.shieldShrinkSpeed * delta);
+//
+//            float cx = Gdx.graphics.getWidth() / 2f;
+//            float cy = Gdx.graphics.getHeight() / 2f;
+//
+//            Iterator<org.example.Model.Enemy> it = game.enemies.iterator();
+//            while (it.hasNext()) {
+//                org.example.Model.Enemy e = it.next();
+//
+//                Vector3 screenPos = camera.project(new Vector3(e.x, e.y, 0));
+//
+//                if (screenPos.x < cx - game.shieldHalfWidth
+//                        || screenPos.x > cx + game.shieldHalfWidth
+//                        || screenPos.y < cy - game.shieldHalfHeight
+//                        || screenPos.y > cy + game.shieldHalfHeight) {
+//                    it.remove();
+//                    game.kills++;
+//                }
+//            }
+//
+//        }
+    }
+    }
