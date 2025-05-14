@@ -17,6 +17,7 @@ import org.example.Model.User;
 import org.example.Model.enums.Language;
 import org.example.controller.ChangeMenuController;
 import org.example.controller.DatabaseManager;
+import org.example.controller.ScoreboardMenuController;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -53,7 +54,7 @@ public class ScoreboardMenu implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 try {
-                    sortUsersByScore();
+                    ScoreboardMenuController.sortUsersByScore(ScoreboardMenu.this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -64,7 +65,7 @@ public class ScoreboardMenu implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 try {
-                    sortUsersByUsername();
+                    ScoreboardMenuController.sortUsersByUsername(ScoreboardMenu.this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -75,7 +76,7 @@ public class ScoreboardMenu implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 try {
-                    sortUsersByKills();
+                    ScoreboardMenuController.sortUsersByKills(ScoreboardMenu.this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -86,7 +87,7 @@ public class ScoreboardMenu implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 try {
-                    sortUsersBySurvivalTime();
+                    ScoreboardMenuController.sortUsersBySurvivalTime(ScoreboardMenu.this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -143,25 +144,25 @@ public class ScoreboardMenu implements Screen, InputProcessor {
         } else if (keycode == Input.Keys.ENTER) {
             if (index == 0) {
                 try {
-                    sortUsersByScore();
+                    ScoreboardMenuController.sortUsersByScore(ScoreboardMenu.this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             } else if (index == 1) {
                 try {
-                    sortUsersByUsername();
+                    ScoreboardMenuController.sortUsersByUsername(ScoreboardMenu.this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             } else if (index == 2) {
                 try {
-                    sortUsersByKills();
+                    ScoreboardMenuController.sortUsersByKills(ScoreboardMenu.this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             } else if (index == 3) {
                 try {
-                    sortUsersBySurvivalTime();
+                    ScoreboardMenuController.sortUsersBySurvivalTime(ScoreboardMenu.this);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -175,29 +176,6 @@ public class ScoreboardMenu implements Screen, InputProcessor {
         return false;
     }
 
-    private void sortUsersByScore() throws SQLException {
-        List<User> users = DatabaseManager.getAllUsers();
-        users.sort((u1, u2) -> Integer.compare(u2.getScore(), u1.getScore()));
-        ChangeMenuController.changeMenu(ScoreboardMenu.this, new ScoreboardDisplay(users));
-    }
-
-    private void sortUsersByUsername() throws SQLException {
-        List<User> users = DatabaseManager.getAllUsers();
-        users.sort((u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername()));
-        ChangeMenuController.changeMenu(ScoreboardMenu.this, new ScoreboardDisplay(users));
-    }
-
-    private void sortUsersByKills() throws SQLException {
-        List<User> users = DatabaseManager.getAllUsers();
-        users.sort((u1, u2) -> Integer.compare(u2.getTotalKills(), u1.getTotalKills()));
-        ChangeMenuController.changeMenu(ScoreboardMenu.this, new ScoreboardDisplay(users));
-    }
-
-    private void sortUsersBySurvivalTime() throws SQLException {
-        List<User> users = DatabaseManager.getAllUsers();
-        users.sort((u1, u2) -> Integer.compare(u2.getSurvivalTime(), u1.getSurvivalTime()));
-        ChangeMenuController.changeMenu(ScoreboardMenu.this, new ScoreboardDisplay(users));
-    }
 
 
     @Override

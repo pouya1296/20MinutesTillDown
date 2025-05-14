@@ -16,6 +16,7 @@ import org.example.Model.enums.Ability;
 import org.example.controller.ChangeMenuController;
 import org.example.controller.DatabaseManager;
 import org.example.controller.GameDataManager;
+import org.example.controller.PauseMenuController;
 
 import java.sql.SQLException;
 
@@ -66,22 +67,7 @@ public class PauseMenu implements Screen {
         giveUpButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (App.currentUser.isGuest)
-                    ChangeMenuController.changeMenu(PauseMenu.this, new StartMenu());
-                else {
-                    org.example.Model.Game game = App.currentGame;
-                    User user = App.currentUser;
-                    if (user.time < (int)game.time)
-                        user.time = (int)game.time;
-                    //score
-                    user.totalKills += game.kills;
-                    try {
-                        DatabaseManager.updateUser(user);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    ChangeMenuController.changeMenu(PauseMenu.this, new PreGameMenu());
-                }
+                PauseMenuController.giveUpHandle(PauseMenu.this);
             }
         });
 
@@ -90,13 +76,7 @@ public class PauseMenu implements Screen {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (App.currentUser.isGuest)
-                    ChangeMenuController.changeMenu(PauseMenu.this, new StartMenu());
-                else {
-                    org.example.Model.Game game = App.currentGame;
-                    GameDataManager.saveGame(game);
-                    ChangeMenuController.changeMenu(PauseMenu.this, new PreGameMenu());
-                }
+                PauseMenuController.saveAndExitHandle(PauseMenu.this);
             }
         });
 
@@ -113,6 +93,7 @@ public class PauseMenu implements Screen {
         stage.addActor(buttonTable);
         Gdx.input.setInputProcessor(stage);
     }
+
 
     private void addAbilities(Table table) {
         Label abilityTitle = new Label("Abilities:", skin);

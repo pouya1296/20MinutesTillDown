@@ -32,15 +32,17 @@ public class Game {
     public int ammo;
     public float enemySpawnTimer = 0;
     public float enemySpawnInterval = 2.0f;
-    public float enemySpeed = 10;
+    public float enemySpeed = 50;
     public transient GameMenu gameMenu;
-    public  ArrayList<Enemy> enemies = new ArrayList<>();
-    public  ArrayList<Tree> trees = new ArrayList<>();
+    public ArrayList<Enemy> enemies = new ArrayList<>();
+    public ArrayList<Tree> trees = new ArrayList<>();
     public ArrayList<Drop> drops = new ArrayList<>();
     public int xp;
+    public float invincibleTimer;
 
 
     public Game(User user) {
+        this.invincibleTimer = 0f;
         this.grayScaleMode = user.grayScaleMode;
         this.autoReload = user.autoReload;
         this.soundEffect = user.soundEffect;

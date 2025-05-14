@@ -30,16 +30,14 @@ public class Enemy {
 
     public void update(float delta, Game game) {
         stateTime += delta;
-        Iterator<Enemy> enemyIt = game.enemies.iterator();
-        while(enemyIt.hasNext()) {
-            Enemy m =  enemyIt.next();
-            float dx = game.x - m.x;
-            float dy = game.y - m.y;
-            float dist = (float)Math.sqrt(dx*dx + dy*dy);
-            if(dist > 0) {
-                m.x += (dx/dist) * game.enemySpeed * delta ;
-                m.y += (dy/dist) * game.enemySpeed * delta ;
+        if(this instanceof TentacleMonster) {
+            float dx = game.x - this.x;
+            float dy = game.y - this.y;
+            float dist = (float) Math.sqrt(dx * dx + dy * dy);
+            if (dist > 0) {
+                this.x += (dx / dist) * game.enemySpeed * delta;
+                this.y += (dy / dist) * game.enemySpeed * delta;
             }
         }
-    }
+        }
 }

@@ -15,6 +15,7 @@ import org.example.Model.App;
 import org.example.Model.enums.Language;
 import org.example.controller.ChangeMenuController;
 import org.example.controller.MusicManager;
+import org.example.controller.SettingMenuController;
 
 public class SettingsMenu implements Menu, Screen, InputProcessor {
     private Stage stage;
@@ -125,47 +126,16 @@ public class SettingsMenu implements Menu, Screen, InputProcessor {
         } else if (keycode == Input.Keys.UP) {
             index = (index - 1 + 8) % 8;
         } else if (keycode == Input.Keys.ENTER) {
-            if (index == 0) {
-                if (MusicManager.getBackgroundMusic().isPlaying())
-                    MusicManager.stop();
-                else
-                    MusicManager.play();
-            } else if (index == 1) {
-                ChangeMenuController.changeMenu(SettingsMenu.this, new MusicMenu());
-            } else if (index == 2) {
-                App.currentUser.soundEffect = !App.currentUser.soundEffect;
-                soundEffectCheckBox.setChecked(App.currentUser.soundEffect);
-            } else if (index == 3) {
-                ChangeMenuController.changeMenu(SettingsMenu.this, new KeyboardMenu(App.currentUser.keys));
-            } else if (index == 4) {
-                App.currentUser.autoReload = !App.currentUser.autoReload;
-                autoReloadCheckBox.setChecked(App.currentUser.autoReload);
-            } else if (index == 5) {
-                App.currentUser.grayScaleMode = !App.currentUser.grayScaleMode;
-                grayscaleCheckBox.setChecked(App.currentUser.grayScaleMode);
-            } else if (index == 7) {
-                ChangeMenuController.changeMenu(SettingsMenu.this, new MainMenu());
-            }
+            SettingMenuController.checkEnter(index, soundEffectCheckBox, autoReloadCheckBox, grayscaleCheckBox, SettingsMenu.this);
             updateSelection();
             return true;
         }
         if (index == 6) {
-            if (keycode == Input.Keys.LEFT) {
-                float newVolume = Math.max(0f, volumeSlider.getValue() - 0.05f);
-                volumeSlider.setValue(newVolume);
-                MusicManager.setVolume(newVolume);
-                return true;
-            } else if (keycode == Input.Keys.RIGHT) {
-                float newVolume = Math.min(1f, volumeSlider.getValue() + 0.05f);
-                volumeSlider.setValue(newVolume);
-                MusicManager.setVolume(newVolume);
-                return true;
-            }
+            if (SettingMenuController.volumeControl(keycode, volumeSlider)) return true;
         }
         updateSelection();
         return false;
     }
-
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);

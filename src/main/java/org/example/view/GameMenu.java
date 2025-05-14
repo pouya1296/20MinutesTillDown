@@ -12,15 +12,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import org.example.Model.*;
 import org.example.Model.enums.Enemy;
 import org.example.Model.enums.Hero;
-
+import org.example.controller.GameMenuController;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,15 +43,16 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     public Texture treeTexture;
     public boolean autoReloadStart;
     public Texture dropTexture;
-
     public enum WeaponState {IDLE, SHOOTING, RELOADING}
-
     private OrthographicCamera hudCamera;
     public WeaponState weaponState;
     public float reloadTimer = 0;
     public transient BitmapFont font;
     public transient Texture bulletTexture;
     public Animation<TextureRegion> tentacleWalkAnimation;
+    public float eyebatSpawnTimer = 0f;
+    public List<Bullet> eyebatBullets = new ArrayList<>();
+    public Animation<TextureRegion> eyebatAnimation;
 
     public GameMenu(Game game) {
         this.game = game;
@@ -73,9 +72,9 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         runningPlayerTexture = new Texture(Gdx.files.internal(hero.runningPath));
         this.tileTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_ForestTiles_0.png"));
         this.bulletTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\bullet.png"));
-        map = new int[100][100];
-        for (int i = 0; i < 100; i++) {
-            for (int j = 0; j < 100; j++) {
+        map = new int[200][200];
+        for (int i = 0; i < 200; i++) {
+            for (int j = 0; j < 200; j++) {
                 map[i][j] = 0;
             }
         }
@@ -92,18 +91,24 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             weaponReloadTextures[i - 1] = new Texture(Gdx.files.internal(game.weapon.paths[i]));
         }
         treeTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_TreeMonster_0.png"));
-        for (int i = 0; i < 50; i++) {
+        for (int i = 5; i < 70; i++) {
             float x = (float) (Math.random() * 6400);
             float y = (float) (Math.random() * 6400);
             game.trees.add(new Tree(x, y, "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_TreeMonster_0.png"));
         }
-        TextureRegion[] frames = new TextureRegion[4];
+        TextureRegion[] tentacleFrames = new TextureRegion[4];
         for (int i = 0; i < 4; i++) {
             Texture t = new Texture(Gdx.files.internal(org.example.Model.enums.Enemy.TENTACLE.texturePaths[i]));
-            frames[i] = new TextureRegion(t);
+            tentacleFrames[i] = new TextureRegion(t);
+        }
+        tentacleWalkAnimation = new Animation<>(0.1F, tentacleFrames);
+        TextureRegion[] eyebatFrames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++) {
+            Texture t = new Texture(Gdx.files.internal(Enemy.EYE_BAT.texturePaths[i]));
+            eyebatFrames[i] = new TextureRegion(t);
         }
         autoReloadStart = true;
-        tentacleWalkAnimation = new Animation<>(0.1F, frames);
+        eyebatAnimation = new Animation<>(0.1F, eyebatFrames);
         dropTexture = new Texture(Gdx.files.internal(Enemy.TENTACLE.texturePaths[5]));
     }
 
@@ -112,6 +117,13 @@ public class GameMenu implements Menu, InputProcessor, Screen {
 
     public void update(float delta) {
         game.time += delta;
+        int saveHp = game.hp;
+
+        if (game.invincibleTimer > 0f) {
+            game.invincibleTimer -= delta;
+            if (game.invincibleTimer < 0f)
+                game.invincibleTimer = 0f;
+        }
         float saveX = game.x;
         float saveY = game.y;
         if (game.time >= game.totalTime) {
@@ -124,104 +136,24 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         }
         isPlayerMoving = false;
         handleInput(delta);
-        float playerSize = 32;
-        for (Tree tree : game.trees) {
-            if (game.x + playerSize > tree.x && game.x < tree.x + 64 &&
-                    game.y + playerSize > tree.y && game.y < tree.y + 64) {
-                game.x = saveX;
-                game.y = saveY;
-                break;
-            }
-        }
-        Iterator<Bullet> bulletIterator = bullets.iterator();
-        while (bulletIterator.hasNext()) {
-            Bullet bullet = bulletIterator.next();
-            bullet.update(delta, game);
-            boolean hit = false;
-            for (Tree tree : game.trees) {
-                if (bullet.x + 8 > tree.x && bullet.x < tree.x + 64 &&
-                        bullet.y + 8 > tree.y && bullet.y < tree.y + 64) {
-                    bullet.active = false;
-                    break;
-                }
-            }
-            if (!hit) {
-                Iterator<org.example.Model.Enemy> enemyIt = game.enemies.iterator();
-                while (enemyIt.hasNext()) {
-                    org.example.Model.Enemy enemy = enemyIt.next();
-                    if (bullet.x + 4 > enemy.x && bullet.x < enemy.x + 64 &&
-                            bullet.y + 4 > enemy.y && bullet.y < enemy.y + 64) {
-
-                        enemy.hp -= game.weapon.damage;
-                        hit = true;
-                        if (enemy.hp <= 0) {
-                            game.drops.add(new Drop(enemy.x, enemy.y, enemy.dropPath));
-                            game.kills++;
-                            enemyIt.remove();
-                        }
-                        break;
-                    }
-                }
-            }
-            if (hit || !bullet.active) {
-                bulletIterator.remove();
-            }
-        }
-        Iterator<Drop> dropIt = game.drops.iterator();
-        Rectangle playerRect = new Rectangle(game.x, game.y, 10, 10);
-        while (dropIt.hasNext()) {
-            Drop drop = dropIt.next();
-            if (!drop.collected && drop.bounds.overlaps(playerRect)) {
-                drop.collected = true;
-                game.kills++;
-                game.xp += Drop.XP_VALUE;
-                dropIt.remove();
-            }
-        }
-
+        float playerSize = (float) idlePlayerTexture.getHeight() / 2;
+        game.invincibleTimer = GameMenuController.playerTreeHandle(playerSize, saveX, saveY, game, game.invincibleTimer);
+        GameMenuController.bulletHandle(delta, game, bullets, treeTexture, tentacleWalkAnimation, eyebatAnimation);
+        GameMenuController.dropHandle(game, idlePlayerTexture);
         game.enemySpawnTimer += delta;
-        tentacleSpawn();
+        GameMenuController.tentacleSpawn(game);
+        eyebatSpawnTimer = GameMenuController.eyebatSpawn(delta, game, eyebatSpawnTimer);
+        GameMenuController.eyeBatShoot(delta, game, eyebatBullets);
 
-        for (org.example.Model.Enemy m : game.enemies) {
-            m.update(delta, game);
+        for (org.example.Model.Enemy enemy : game.enemies) {
+            enemy.update(delta, game);
         }
 
+        GameMenuController.playerEnemy(game, tentacleWalkAnimation, eyebatAnimation);
 
     }
 
-    private void tentacleSpawn() {
-        if (game.enemySpawnTimer >= 3.0f) {
-            game.enemySpawnTimer -= 3.0f;
-            float remaining = Math.max(0, game.totalTime - game.time);
-            int spawnCount = (int) (remaining / 30f);
-
-            for (int s = 0; s < spawnCount; s++) {
-                int edge = (int) (Math.random() * 4);
-                float sx = 0, sy = 0;
-                if (edge == 0) {
-                    sx = (float) Math.random() * Gdx.graphics.getWidth();
-                    sy = Gdx.graphics.getHeight() + 32;
-                } else if (edge == 1) {
-                    sx = (float) Math.random() * Gdx.graphics.getWidth();
-                    sy = -32;
-                } else if (edge == 2) {
-                    sx = -32;
-                    sy = (float) Math.random() * Gdx.graphics.getHeight();
-                } else {
-                    sx = Gdx.graphics.getWidth() + 32;
-                    sy = (float) Math.random() * Gdx.graphics.getHeight();
-                }
-                float wx = sx + game.x - Gdx.graphics.getWidth() / 2;
-                float wy = sy + game.y - Gdx.graphics.getHeight() / 2;
-                game.enemies.add(new TentacleMonster(
-                        wx, wy,
-                        Enemy.TENTACLE.texturePaths,
-                        Enemy.TENTACLE.hp));
-            }
-        }
-    }
-
-    private void handleInput(float delta) {
+    public void handleInput(float delta) {
         if (weaponState != WeaponState.RELOADING) {
             if (Gdx.input.isKeyJustPressed(keys.get("FIRE")) || Gdx.input.isButtonJustPressed(keys.get("FIRE")) && game.ammo > 0) {
                 weaponState = WeaponState.SHOOTING;
@@ -253,41 +185,9 @@ public class GameMenu implements Menu, InputProcessor, Screen {
                 }
             }
         }
-        if (Gdx.input.isKeyPressed(keys.get("UP")) && Gdx.input.isKeyPressed(keys.get("LEFT"))) {
-            game.x -= speed * delta;
-            game.y += speed * delta;
-            isPlayerMoving = true;
-        } else if (Gdx.input.isKeyPressed(keys.get("UP")) && Gdx.input.isKeyPressed(keys.get("RIGHT"))) {
-            game.x += speed * delta;
-            game.y += speed * delta;
-            isPlayerMoving = true;
-        } else if (Gdx.input.isKeyPressed(keys.get("DOWN")) && Gdx.input.isKeyPressed(keys.get("LEFT"))) {
-            game.x -= speed * delta;
-            game.y -= speed * delta;
-            isPlayerMoving = true;
-        } else if (Gdx.input.isKeyPressed(keys.get("DOWN")) && Gdx.input.isKeyPressed(keys.get("RIGHT"))) {
-            game.x += speed * delta;
-            game.y -= speed * delta;
-            isPlayerMoving = true;
-        } else {
-            if (Gdx.input.isKeyPressed(keys.get("UP"))) {
-                game.y += speed * delta;
-                isPlayerMoving = true;
-            }
-            if (Gdx.input.isKeyPressed(keys.get("DOWN"))) {
-                game.y -= speed * delta;
-                isPlayerMoving = true;
-            }
-            if (Gdx.input.isKeyPressed(keys.get("LEFT"))) {
-                game.x -= speed * delta;
-                isPlayerMoving = true;
-            }
-            if (Gdx.input.isKeyPressed(keys.get("RIGHT"))) {
-                game.x += speed * delta;
-                isPlayerMoving = true;
-            }
-        }
+        isPlayerMoving = GameMenuController.movementHandle(delta, game, speed, keys);
     }
+
 
     @Override
     public boolean keyDown(int i) {
@@ -379,11 +279,11 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     }
 
     private void drawMobile() {
-        for (int x = -49; x < 50; x++) {
-            for (int y = -49; y < 50; y++) {
+        for (int x = -99; x < 100; x++) {
+            for (int y = -99; y < 100; y++) {
                 float tileX = x * 64;
                 float tileY = y * 64;
-                if (map[x + 49][y + 49] == 0) {
+                if (map[x + 99][y + 99] == 0) {
                     batch.draw(tileTexture, tileX, tileY, 64, 64);
                 }
             }
@@ -406,12 +306,17 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             batch.draw(bulletTexture, bullet.x, bullet.y, 8, 8);
         }
         for (org.example.Model.Enemy m : game.enemies) {
-            Animation<TextureRegion> animation = tentacleWalkAnimation;
-            m.render(batch, animation);
+            if (m instanceof TentacleMonster)
+                m.render(batch, tentacleWalkAnimation);
+            else if (m instanceof EyeBat)
+                m.render(batch, eyebatAnimation);
         }
         for (Drop drop : game.drops) {
             drop.updateBounds();
             drop.render(batch, dropTexture);
+        }
+        for (Bullet b : eyebatBullets) {
+            batch.draw(bulletTexture, b.x, b.y, 8, 8);
         }
         batch.end();
     }
