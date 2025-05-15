@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import org.example.Model.*;
 import org.example.Model.enums.Enemy;
 
@@ -112,8 +111,7 @@ public class GameMenuController {
                             }
                             break;
                         }
-                    }
-                    else if(enemy instanceof Elder){
+                    } else if (enemy instanceof Elder) {
                         if (bullet.x + 4 > enemy.x && bullet.x < enemy.x + 100 &&
                                 bullet.y + 4 > enemy.y && bullet.y < enemy.y + 100) {
 
@@ -273,6 +271,15 @@ public class GameMenuController {
                     }
                     break;
                 }
+            } else if (enemy instanceof Elder) {
+                if (game.x + 7 > enemy.x && game.x < enemy.x + 100 &&
+                        game.y + 7 > enemy.y && game.y < enemy.y + 100) {
+                    if (game.invincibleTimer == 0f) {
+                        game.invincibleTimer = 1f;
+                        game.hp--;
+                    }
+                    break;
+                }
             }
         }
 
@@ -281,56 +288,68 @@ public class GameMenuController {
     public static void elderSpawn(Game game) {
         if (game.time < game.totalTime / 2f)
             return;
-        if(game.elderSpawn)
+        if (game.elderSpawn)
             return;
         game.elderSpawn = true;
-        game.shieldActive =true;
-                int edge = (int) (Math.random() * 4);
-                float sx = 0, sy = 0;
-                if (edge == 0) {
-                    sx = (float) Math.random() * Gdx.graphics.getWidth();
-                    sy = Gdx.graphics.getHeight() + 32;
-                } else if (edge == 1) {
-                    sx = (float) Math.random() * Gdx.graphics.getWidth();
-                    sy = -32;
-                } else if (edge == 2) {
-                    sx = -32;
-                    sy = (float) Math.random() * Gdx.graphics.getHeight();
-                } else {
-                    sx = Gdx.graphics.getWidth() + 32;
-                    sy = (float) Math.random() * Gdx.graphics.getHeight();
-                }
-                float wx = sx + game.x - Gdx.graphics.getWidth() / 2;
-                float wy = sy + game.y - Gdx.graphics.getHeight() / 2;
-                game.enemies.add(new Elder(
-                        wx, wy,
-                        Enemy.ELDER.texturePaths,
-                        Enemy.ELDER.hp));
+        game.shieldActive = true;
+
+        float sx = 0;
+        float sy = 0;
+        float wx = sx + game.x - Gdx.graphics.getWidth() / 4;
+        float wy = sy + game.y - Gdx.graphics.getHeight() / 4;
+        game.enemies.add(new Elder(
+                wx, wy,
+                Enemy.ELDER.texturePaths,
+                Enemy.ELDER.hp));
+    }
+
+    public static void playerShield(Game game, float saveX, float saveY) {
+        if (game.shieldActive) {
+            if (game.x - 5 < Gdx.graphics.getWidth() / 2 - game.shieldHalfWidth) {
+                game.x = saveX + 6;
+                game.y = saveY;
+                game.hp--;
+            }
+            if (game.x + 10 > Gdx.graphics.getWidth() / 2 + game.shieldHalfWidth) {
+                game.x = saveX - 6;
+                game.y = saveY;
+                game.hp--;
+            }
+            if (game.y - 5 < Gdx.graphics.getHeight() / 2 - game.shieldHalfHeight) {
+                game.x = saveX;
+                game.y = saveY + 6;
+                game.hp--;
+            }
+            if (game.y + 15 > Gdx.graphics.getHeight() / 2 + game.shieldHalfHeight) {
+                game.x = saveX;
+                game.y = saveY - 6;
+                game.hp--;
+            }
         }
+    }
 
     public static void shieldHandle(Game game, float delta, Camera camera) {
-//        if (game.shieldActive) {
-//            game.shieldHalfWidth  = Math.max(0, game.shieldHalfWidth  - game.shieldShrinkSpeed * delta);
-//            game.shieldHalfHeight = Math.max(0, game.shieldHalfHeight - game.shieldShrinkSpeed * delta);
-//
-//            float cx = Gdx.graphics.getWidth() / 2f;
-//            float cy = Gdx.graphics.getHeight() / 2f;
-//
-//            Iterator<org.example.Model.Enemy> it = game.enemies.iterator();
-//            while (it.hasNext()) {
-//                org.example.Model.Enemy e = it.next();
-//
-//                Vector3 screenPos = camera.project(new Vector3(e.x, e.y, 0));
-//
-//                if (screenPos.x < cx - game.shieldHalfWidth
-//                        || screenPos.x > cx + game.shieldHalfWidth
-//                        || screenPos.y < cy - game.shieldHalfHeight
-//                        || screenPos.y > cy + game.shieldHalfHeight) {
-//                    it.remove();
-//                    game.kills++;
-//                }
-//            }
-//
-//        }
+        if (game.shieldActive) {
+            game.shieldHalfWidth = Math.max(0, game.shieldHalfWidth - game.shieldShrinkSpeed * delta);
+            game.shieldHalfHeight = Math.max(0, game.shieldHalfHeight - game.shieldShrinkSpeed * delta);
+
+
+            Iterator<org.example.Model.Enemy> it = game.enemies.iterator();
+            while (it.hasNext()) {
+                org.example.Model.Enemy enemy = it.next();
+
+
+                if (enemy.x < Gdx.graphics.getWidth() / 2 - game.shieldHalfWidth
+                        || enemy.x > Gdx.graphics.getWidth() / 2 + game.shieldHalfWidth
+                        || enemy.y < Gdx.graphics.getHeight() / 2 - game.shieldHalfHeight
+                        || enemy.y > Gdx.graphics.getHeight() / 2 + game.shieldHalfHeight) {
+                    if (enemy instanceof Elder)
+                        game.shieldActive = false;
+                    game.drops.add(new Drop(enemy.x, enemy.y, enemy.dropPath));
+                    it.remove();
+                }
+            }
+
+        }
     }
-    }
+}

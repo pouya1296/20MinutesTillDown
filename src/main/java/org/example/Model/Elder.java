@@ -24,9 +24,17 @@ public class Elder extends Enemy {
             float dx = game.x - this.x;
             float dy = game.y - this.y;
             float dist = (float) Math.sqrt(dx * dx + dy * dy);
+            float distanceX = (dx / dist) * game.enemySpeed * delta * 700;
+            float distanceY = (dy / dist) * game.enemySpeed * delta * 700;
+            if(Math.abs(distanceX) > Math.abs(dx)) {
+                distanceX = dx;
+            }
+            if(Math.abs(distanceY) > Math.abs(dy)) {
+                distanceY = dy;
+            }
             if (dist > 0) {
-                this.x += (dx / dist) * game.enemySpeed * delta * 1000;
-                this.y += (dy / dist) * game.enemySpeed * delta * 1000;
+                this.x += distanceX;
+                this.y += distanceY;
             }
         }
     }

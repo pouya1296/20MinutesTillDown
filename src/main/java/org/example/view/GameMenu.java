@@ -43,7 +43,9 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     public Texture treeTexture;
     public boolean autoReloadStart;
     public Texture dropTexture;
+
     public enum WeaponState {IDLE, SHOOTING, RELOADING}
+
     private OrthographicCamera hudCamera;
     public WeaponState weaponState;
     public float reloadTimer = 0;
@@ -93,7 +95,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         treeTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_TreeMonster_0.png"));
         for (int i = 0; i < 70; i++) {
             float x = 5f + (float) (Math.random() * 6400);
-            float y = 5f +(float) (Math.random() * 6400);
+            float y = 5f + (float) (Math.random() * 6400);
             game.trees.add(new Tree(x, y, "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_TreeMonster_0.png"));
         }
         TextureRegion[] tentacleFrames = new TextureRegion[4];
@@ -110,13 +112,14 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         autoReloadStart = true;
         eyebatAnimation = new Animation<>(0.1F, eyebatFrames);
         dropTexture = new Texture(Gdx.files.internal(Enemy.TENTACLE.texturePaths[5]));
+        game.shieldRenderer = new ShapeRenderer();
     }
 
     public void endGame() {
     }
 
     public void update(float delta) {
-        if(Gdx.input.isKeyJustPressed(keys.get("TIME_CHEAT"))) {
+        if (Gdx.input.isKeyJustPressed(keys.get("TIME_CHEAT"))) {
             game.time += 60;
         }
         game.time += delta;
@@ -143,6 +146,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         handleInput(delta);
         float playerSize = (float) idlePlayerTexture.getHeight() / 2;
         game.invincibleTimer = GameMenuController.playerTreeHandle(playerSize, saveX, saveY, game, game.invincibleTimer);
+        GameMenuController.playerShield(game, saveX, saveY);
         GameMenuController.bulletHandle(delta, game, bullets, treeTexture, tentacleWalkAnimation, eyebatAnimation);
         GameMenuController.dropHandle(game, idlePlayerTexture);
         game.enemySpawnTimer += delta;
@@ -272,14 +276,13 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         font.setColor(Color.BLUE);
         font.getData().setScale(2);
         if (game.shieldActive) {
-            game.shieldRenderer.setProjectionMatrix(hudCamera.combined);
+            game.shieldRenderer.setProjectionMatrix(camera.combined);
             game.shieldRenderer.begin(ShapeRenderer.ShapeType.Line);
             game.shieldRenderer.setColor(Color.CYAN);
-            float cx = Gdx.graphics.getWidth() / 2f;
-            float cy = Gdx.graphics.getHeight() / 2f;
+
             game.shieldRenderer.rect(
-                    cx - game.shieldHalfWidth,
-                    cy - game.shieldHalfHeight,
+                    (Gdx.graphics.getWidth() / 2) - game.shieldHalfWidth,
+                    (Gdx.graphics.getHeight() / 2) - game.shieldHalfHeight,
                     game.shieldHalfWidth * 2,
                     game.shieldHalfHeight * 2
             );
@@ -332,7 +335,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             else if (m instanceof EyeBat)
                 m.render(batch, eyebatAnimation);
             else
-                m.render(batch, null);
+                m.render(batch, eyebatAnimation);
         }
         for (Drop drop : game.drops) {
             drop.updateBounds();

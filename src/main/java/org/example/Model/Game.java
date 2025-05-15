@@ -51,7 +51,6 @@ public class Game {
     public Game(User user) {
         this.shieldHalfWidth = Gdx.graphics.getWidth() / 2f + 20;
         this.shieldHalfHeight = Gdx.graphics.getHeight() / 2f + 20;
-        this.shieldRenderer = new ShapeRenderer();
         this.shieldActive = false;
         this.invincibleTimer = 0f;
         this.elderDashTimer = 0f;
