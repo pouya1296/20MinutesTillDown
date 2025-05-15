@@ -16,6 +16,7 @@ public class Enemy {
     public int hp;
     public float stateTime = 0f;
     public String dropPath;
+    public float stage;
 
     public Enemy(float x, float y, String[] texturePath, int hp, String dropPath) {
         this.x = x;
@@ -23,15 +24,24 @@ public class Enemy {
         this.texturePath = texturePath;
         this.hp = hp;
         this.dropPath = dropPath;
+        this.stage = 0;
     }
 
-    public void render(SpriteBatch batch,Animation<TextureRegion> walkAnimation) {
+    public void render(SpriteBatch batch,Animation<TextureRegion> walkAnimation, Animation<TextureRegion> eliminationAnimation) {
+        if(stage == 0) {
             TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             batch.draw(currentFrame, x, y);
+        }
+        else {
+            TextureRegion currentFrame = eliminationAnimation.getKeyFrame(stage , true);
+            batch.draw(currentFrame, x, y);
+        }
+
     }
 
     public void update(float delta, Game game) {
-        stateTime += delta;
+        if(stage == 0) {
+            stateTime += delta;
             float dx = game.x - this.x;
             float dy = game.y - this.y;
             float dist = (float) Math.sqrt(dx * dx + dy * dy);
@@ -40,4 +50,7 @@ public class Enemy {
                 this.y += (dy / dist) * game.enemySpeed * delta;
             }
         }
+        else
+            stage += delta;
+    }
 }

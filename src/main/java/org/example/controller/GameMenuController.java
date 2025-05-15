@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import org.example.Model.*;
+import org.example.Model.enums.Ability;
 import org.example.Model.enums.Enemy;
+import org.example.view.GameMenu;
 
 import java.util.Iterator;
 import java.util.List;
@@ -58,7 +61,6 @@ public class GameMenuController {
                     game.y + playerSize > tree.y && game.y < tree.y + 70) {
                 game.x = saveX;
                 game.y = saveY;
-                System.out.println(invincibleTimer);
                 if (invincibleTimer == 0f) {
                     game.hp -= 1;
                     return 1f;
@@ -89,12 +91,13 @@ public class GameMenuController {
                         if (bullet.x + 4 > enemy.x && bullet.x < enemy.x + tentacleWalkAnimation.getKeyFrame(enemy.stateTime).getRegionWidth() &&
                                 bullet.y + 4 > enemy.y && bullet.y < enemy.y + tentacleWalkAnimation.getKeyFrame(enemy.stateTime).getRegionHeight()) {
 
-                            enemy.hp -= game.weapon.damage;
+                            enemy.hp -= game.damage;
                             hit = true;
+                            enemy.x += bullet.dx * 5;
+                            enemy.y += bullet.dy * 5;
                             if (enemy.hp <= 0) {
-                                game.drops.add(new Drop(enemy.x, enemy.y, enemy.dropPath));
                                 game.kills++;
-                                enemyIt.remove();
+                                enemy.stage += delta;
                             }
                             break;
                         }
@@ -102,12 +105,13 @@ public class GameMenuController {
                         if (bullet.x + 4 > enemy.x && bullet.x < enemy.x + eyebatAnimation.getKeyFrame(enemy.stateTime).getRegionWidth() &&
                                 bullet.y + 4 > enemy.y && bullet.y < enemy.y + eyebatAnimation.getKeyFrame(enemy.stateTime).getRegionHeight()) {
 
-                            enemy.hp -= game.weapon.damage;
+                            enemy.hp -= game.damage;
                             hit = true;
+                            enemy.x += bullet.dx * 5;
+                            enemy.y += bullet.dy * 5;
                             if (enemy.hp <= 0) {
-                                game.drops.add(new Drop(enemy.x, enemy.y, enemy.dropPath));
                                 game.kills++;
-                                enemyIt.remove();
+                                enemy.stage += delta;
                             }
                             break;
                         }
@@ -115,13 +119,14 @@ public class GameMenuController {
                         if (bullet.x + 4 > enemy.x && bullet.x < enemy.x + 100 &&
                                 bullet.y + 4 > enemy.y && bullet.y < enemy.y + 100) {
 
-                            enemy.hp -= game.weapon.damage;
+                            enemy.hp -= game.damage;
                             hit = true;
+                            enemy.x += bullet.dx * 5;
+                            enemy.y += bullet.dy * 5;
                             if (enemy.hp <= 0) {
-                                game.drops.add(new Drop(enemy.x, enemy.y, enemy.dropPath));
                                 game.kills++;
                                 game.shieldActive = false;
-                                enemyIt.remove();
+                                enemy.stage += delta;
                             }
                             break;
                         }
@@ -143,7 +148,7 @@ public class GameMenuController {
             if (!drop.collected && drop.bounds.overlaps(playerRect)) {
                 drop.collected = true;
                 game.kills++;
-                game.xp += Drop.XP_VALUE;
+                game.xp += 3;
                 dropIt.remove();
             }
         }
@@ -174,7 +179,7 @@ public class GameMenuController {
             if (b.x > game.x && b.x < game.x + 32 && b.y > game.y && b.y < game.y + 32) {
                 if (game.invincibleTimer == 0f)
                     game.hp -= 1;
-
+                game.isHit = true;
                 ebbIt.remove();
             } else if (!b.active) {
                 ebbIt.remove();
@@ -328,7 +333,7 @@ public class GameMenuController {
         }
     }
 
-    public static void shieldHandle(Game game, float delta, Camera camera) {
+    public static void shieldHandle(Game game, float delta) {
         if (game.shieldActive) {
             game.shieldHalfWidth = Math.max(0, game.shieldHalfWidth - game.shieldShrinkSpeed * delta);
             game.shieldHalfHeight = Math.max(0, game.shieldHalfHeight - game.shieldShrinkSpeed * delta);
@@ -345,11 +350,86 @@ public class GameMenuController {
                         || enemy.y > Gdx.graphics.getHeight() / 2 + game.shieldHalfHeight) {
                     if (enemy instanceof Elder)
                         game.shieldActive = false;
-                    game.drops.add(new Drop(enemy.x, enemy.y, enemy.dropPath));
-                    it.remove();
+                    enemy.stage += delta;
                 }
             }
 
+        }
+    }
+
+    public static GameMenu.WeaponState shootHandle(Game game, Camera camera) {
+        game.ammo -= 1;
+        Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(mousePos);
+        for (int i = 0; i < game.projectile; i++) {
+            game.bullets.add(new Bullet(game.x + 10, game.y + 10, mousePos.x + 5 * i, mousePos.y + 5 * i));
+        }
+        return GameMenu.WeaponState.SHOOTING;
+    }
+
+    public static void levelHandle(Game game) {
+        if (game.xp >= game.level * 20) {
+            addLevel(game);
+        }
+    }
+
+    public static void addLevel(Game game) {
+        game.xp = 0;
+        game.level++;
+    }
+
+    public static void removeEnemyHandle(Game game, Texture elder, Texture tentacle, Texture eyebat) {
+        Iterator<org.example.Model.Enemy> enemies = game.enemies.iterator();
+        while (enemies.hasNext()) {
+            org.example.Model.Enemy enemy = enemies.next();
+            if (enemy.stage >= 0.5f) {
+                if (enemy instanceof Elder) {
+                    game.drops.add(new Drop(enemy.x, enemy.y, "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\ElderBrain_Em.png", 0));
+                    game.drops.getLast().texture = elder;
+                } else if (enemy instanceof TentacleMonster) {
+                    game.drops.add(new Drop(enemy.x, enemy.y, "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\EyeMonster_Em.png", 1));
+                    game.drops.getLast().texture = tentacle;
+                } else {
+                    game.drops.add(new Drop(enemy.x, enemy.y, "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\BrainMonster_Em.png", 2));
+                    game.drops.getLast().texture = eyebat;
+                }
+                enemies.remove();
+            }
+        }
+    }
+
+    public static void vitalityHandle(Game game) {
+        game.maxHp = game.hero.maxHP + 1;
+    }
+
+    public static void procreaseHandle(Game game) {
+        game.projectile = game.weapon.projectile + 1;
+    }
+
+    public static void ammoCreaseHandle(Game game) {
+        game.maxAmmo = game.weapon.maxAmmo + 5;
+    }
+
+    public static void damagerHandle(Game game, float delta) {
+        if (game.damagerTimer < 10) {
+            game.damagerTimer += delta;
+            game.damage = (game.weapon.damage * 5) / 4;
+        } else {
+            game.damagerTimer = 0f;
+            game.damage = game.weapon.damage;
+            game.abilities.remove(Ability.DAMAGER);
+        }
+    }
+
+    public static void speedyHandle(Game game, float delta) {
+        if (game.speedyTimer < 10) {
+            game.speedyTimer += delta;
+            game.speed = game.hero.speed * 2;
+        }
+        else{
+            game.speedyTimer = 0f;
+            game.speed = game.hero.speed;
+            game.abilities.remove(Ability.SPEEDY);
         }
     }
 }

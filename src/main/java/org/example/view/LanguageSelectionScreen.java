@@ -2,6 +2,8 @@ package org.example.view;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -39,6 +41,16 @@ public class LanguageSelectionScreen extends Game implements Screen, InputProces
         inputMultiplexer.addProcessor(this);
         inputMultiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(inputMultiplexer);
+        Pixmap newCursorPixmap = new Pixmap(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_CursorSprite.png"));
+        Pixmap scaledPixmap = new Pixmap(32, 32, newCursorPixmap.getFormat());
+        scaledPixmap.drawPixmap(newCursorPixmap,
+                0, 0, newCursorPixmap.getWidth(), newCursorPixmap.getHeight(),
+                0, 0, 32, 32
+        );
+        Cursor newCursor = Gdx.graphics.newCursor(scaledPixmap, 0, 0);
+        newCursorPixmap.dispose();
+        scaledPixmap.dispose();
+        Gdx.graphics.setCursor(newCursor);
     }
 
     private void addClickListener() {

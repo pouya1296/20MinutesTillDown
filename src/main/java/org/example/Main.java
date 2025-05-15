@@ -1,10 +1,13 @@
 package org.example;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Pixmap;
 import org.example.view.LanguageSelectionScreen;
 
 //TODO hint menu cheat codes
@@ -21,6 +24,9 @@ public class Main {
             }
         });
         config.setWindowedMode(2400, 1800);
+
         new Lwjgl3Application(new LanguageSelectionScreen(), config);
+
+
     }
 }

@@ -9,6 +9,7 @@ import org.example.view.GameMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Game {
@@ -47,8 +48,23 @@ public class Game {
     public float shieldHalfHeight;
     public float shieldShrinkSpeed = 5f;
     public transient ShapeRenderer shieldRenderer;
+    public int level;
+    public int projectile;
+    public ArrayList<Bullet> bullets = new ArrayList<>();
+    public ArrayList<Bullet> eyebatBullets = new ArrayList<>();
+    public boolean isHit;
+    public int maxHp;
+    public int maxAmmo;
+    public float damagerTimer;
+    public float speedyTimer;
+    public int damage;
+    public int speed;
 
     public Game(User user) {
+        this.speedyTimer = 0f;
+        this.damagerTimer = 0f;
+        this.isHit = false;
+        this.level = 1;
         this.shieldHalfWidth = Gdx.graphics.getWidth() / 2f + 20;
         this.shieldHalfHeight = Gdx.graphics.getHeight() / 2f + 20;
         this.shieldActive = false;
@@ -75,6 +91,7 @@ public class Game {
         this.gameMenu = new GameMenu(this);
         this.xp = 0;
         this.elderSpawn = false;
+        this.projectile = weapon.projectile;
 //        blackAndWhiteShader = new ShaderProgram(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\blackandwhite.glsl"),
 //                Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\vertex.glsl"));
     }

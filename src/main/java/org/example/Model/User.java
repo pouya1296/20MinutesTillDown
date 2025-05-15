@@ -58,6 +58,10 @@ public class User {
         keys.put("RELOAD", Input.Keys.R);
         keys.put("PAUSE", Input.Keys.P);
         keys.put("TIME_CHEAT", Input.Keys.NUM_1);
+        keys.put("BOSS_CHEAT", Input.Keys.NUM_2);
+        keys.put("LEVEL_CHEAT", Input.Keys.NUM_3);
+        keys.put("HP_CHEAT", Input.Keys.NUM_4);
+
     }
 
     public String getUsername() {

@@ -11,13 +11,15 @@ public class Drop {
     public boolean collected = false;
     public Rectangle bounds;
     public transient Texture texture;
+    public int textureID;
 
     public static final int XP_VALUE = 3;
 
-    public Drop(float x, float y, String texturePath) {
+    public Drop(float x, float y, String texturePath, int textureID) {
         this.x = x;
         this.y = y;
         this.texturePath = texturePath;
+        this.textureID = textureID;
         this.texture = new Texture(texturePath);
         this.bounds = new Rectangle(x,  y, texture.getWidth(), texture.getHeight());
     }

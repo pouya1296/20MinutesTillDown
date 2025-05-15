@@ -12,21 +12,18 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
 import org.example.Model.*;
+import org.example.Model.enums.Ability;
 import org.example.Model.enums.Enemy;
 import org.example.Model.enums.Hero;
 import org.example.controller.GameMenuController;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class GameMenu implements Menu, InputProcessor, Screen {
     public transient OrthographicCamera camera;
     public transient SpriteBatch batch;
     public Game game;
-    public int speed;
     public Hero hero;
     public transient Texture idlePlayerTexture;
     public transient Texture runningPlayerTexture;
@@ -35,14 +32,14 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     public transient Texture tileTexture;
     public Map<String, Integer> keys;
     public transient ShapeRenderer hpBarRenderer;
-    public int maxAmmo;
+    public transient ShapeRenderer xpBarRenderer;
     public transient Texture weaponIdleTexture;
     public transient Texture[] weaponReloadTextures;
     public int currentReloadFrame = 0;
-    public List<Bullet> bullets = new ArrayList<>();
     public Texture treeTexture;
     public boolean autoReloadStart;
     public Texture dropTexture;
+    public Texture hitTexture;
 
     public enum WeaponState {IDLE, SHOOTING, RELOADING}
 
@@ -53,8 +50,11 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     public transient Texture bulletTexture;
     public Animation<TextureRegion> tentacleWalkAnimation;
     public float eyebatSpawnTimer = 0f;
-    public List<Bullet> eyebatBullets = new ArrayList<>();
     public Animation<TextureRegion> eyebatAnimation;
+    public Animation<TextureRegion> elimintationAnimation;
+    public Texture eyebatDropTexture;
+    public Texture tentacleDropTexture;
+    public Texture elderDropTexture;
 
     public GameMenu(Game game) {
         this.game = game;
@@ -68,7 +68,7 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         if (font == null)
             font = new BitmapFont();
         this.hero = game.hero;
-        speed = hero.speed;
+        game.speed = hero.speed;
         this.isPlayerMoving = false;
         idlePlayerTexture = new Texture(Gdx.files.internal(hero.idlePath));
         runningPlayerTexture = new Texture(Gdx.files.internal(hero.runningPath));
@@ -82,10 +82,11 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         }
         font.setColor(Color.BLUE);
         font.getData().setScale(2);
-        maxAmmo = game.weapon.maxAmmo;
-        game.ammo = maxAmmo;
+        game.maxAmmo = game.weapon.maxAmmo;
+        game.ammo = game.maxAmmo;
         this.keys = game.keys;
         hpBarRenderer = new ShapeRenderer();
+        xpBarRenderer = new ShapeRenderer();
         weaponState = WeaponState.IDLE;
         weaponIdleTexture = new Texture(Gdx.files.internal(game.weapon.paths[0]));
         weaponReloadTextures = new Texture[game.weapon.paths.length - 1];
@@ -112,7 +113,18 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         autoReloadStart = true;
         eyebatAnimation = new Animation<>(0.1F, eyebatFrames);
         dropTexture = new Texture(Gdx.files.internal(Enemy.TENTACLE.texturePaths[5]));
+        TextureRegion[] elimintationFrames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++) {
+            Texture t = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\FireballExplosion_" + (i + 1) + ".png"));
+            elimintationFrames[i] = new TextureRegion(t);
+        }
+        elimintationAnimation = new Animation<>(0.1F, elimintationFrames);
         game.shieldRenderer = new ShapeRenderer();
+        hitTexture = new Texture(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\FireballExplosion_0.png"));
+        elderDropTexture = new Texture("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\ElderBrain_Em.png");
+        tentacleDropTexture = new Texture("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\EyeMonster_Em.png");
+        eyebatDropTexture = new Texture("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\BrainMonster_Em.png");
+        game.maxHp = hero.maxHP;
     }
 
     public void endGame() {
@@ -122,6 +134,29 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         if (Gdx.input.isKeyJustPressed(keys.get("TIME_CHEAT"))) {
             game.time += 60;
         }
+        if (Gdx.input.isKeyJustPressed(keys.get("BOSS_CHEAT"))) {
+            game.time = game.totalTime / 2;
+        }
+        if (Gdx.input.isKeyJustPressed(keys.get("LEVEL_CHEAT"))) {
+            GameMenuController.addLevel(game);
+        }
+        if (Gdx.input.isKeyJustPressed(keys.get("HP_CHEAT"))) {
+            game.hp++;
+            if (game.hp > game.maxHp) {
+                game.hp = game.maxHp;
+            }
+        }
+        if(game.abilities.contains(Ability.VITALITY))
+            GameMenuController.vitalityHandle(game);
+        if(game.abilities.contains(Ability.PROCREASE))
+            GameMenuController.procreaseHandle(game);
+        if(game.abilities.contains(Ability.AMOCREASE))
+            GameMenuController.ammoCreaseHandle(game);
+        if(game.abilities.contains(Ability.DAMAGER))
+            GameMenuController.damagerHandle(game, delta);
+        if(game.abilities.contains(Ability.SPEEDY))
+            GameMenuController.speedyHandle(game, delta);
+
         game.time += delta;
         int saveHp = game.hp;
         game.elderDashTimer += delta;
@@ -147,37 +182,35 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         float playerSize = (float) idlePlayerTexture.getHeight() / 2;
         game.invincibleTimer = GameMenuController.playerTreeHandle(playerSize, saveX, saveY, game, game.invincibleTimer);
         GameMenuController.playerShield(game, saveX, saveY);
-        GameMenuController.bulletHandle(delta, game, bullets, treeTexture, tentacleWalkAnimation, eyebatAnimation);
+        GameMenuController.bulletHandle(delta, game, game.bullets, treeTexture, tentacleWalkAnimation, eyebatAnimation);
         GameMenuController.dropHandle(game, idlePlayerTexture);
         game.enemySpawnTimer += delta;
         GameMenuController.tentacleSpawn(game);
         eyebatSpawnTimer = GameMenuController.eyebatSpawn(delta, game, eyebatSpawnTimer);
-        GameMenuController.eyeBatShoot(delta, game, eyebatBullets);
+        GameMenuController.eyeBatShoot(delta, game, game.eyebatBullets);
         GameMenuController.elderSpawn(game);
-        GameMenuController.shieldHandle(game, delta, camera);
+        GameMenuController.shieldHandle(game, delta);
 
         for (org.example.Model.Enemy enemy : game.enemies) {
             enemy.update(delta, game);
         }
 
         GameMenuController.playerEnemy(game, tentacleWalkAnimation, eyebatAnimation);
+        GameMenuController.levelHandle(game);
+        GameMenuController.removeEnemyHandle(game, elderDropTexture, tentacleDropTexture, eyebatDropTexture);
 
     }
 
     public void handleInput(float delta) {
         if (weaponState != WeaponState.RELOADING) {
             if (Gdx.input.isKeyJustPressed(keys.get("FIRE")) || Gdx.input.isButtonJustPressed(keys.get("FIRE")) && game.ammo > 0) {
-                weaponState = WeaponState.SHOOTING;
-                game.ammo -= 1;
-                Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-                camera.unproject(mousePos);
-                bullets.add(new Bullet(game.x + 10, game.y + 10, mousePos.x, mousePos.y));
+                weaponState = GameMenuController.shootHandle(game, camera);
             } else {
                 weaponState = WeaponState.IDLE;
             }
         }
 
-        if ((Gdx.input.isKeyJustPressed(keys.get("RELOAD")) && game.ammo < maxAmmo) || (game.ammo == 0 && game.autoReload && autoReloadStart)) {
+        if ((Gdx.input.isKeyJustPressed(keys.get("RELOAD")) && game.ammo < game.maxAmmo) || (game.ammo == 0 && game.autoReload && autoReloadStart)) {
             weaponState = WeaponState.RELOADING;
             reloadTimer = 0;
             currentReloadFrame = 0;
@@ -191,12 +224,12 @@ public class GameMenu implements Menu, InputProcessor, Screen {
                     currentReloadFrame++;
                 } else {
                     weaponState = WeaponState.IDLE;
-                    game.ammo = maxAmmo;
+                    game.ammo = game.maxAmmo;
                     autoReloadStart = true;
                 }
             }
         }
-        isPlayerMoving = GameMenuController.movementHandle(delta, game, speed, keys);
+        isPlayerMoving = GameMenuController.movementHandle(delta, game, game.speed, keys);
     }
 
 
@@ -266,13 +299,21 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         batch.begin();
         drawStill();
         batch.end();
-        float hpPercent = (float) game.hp / hero.maxHP;
+        float hpPercent = (float) game.hp / game.maxHp;
         hpBarRenderer.begin(ShapeRenderer.ShapeType.Filled);
         hpBarRenderer.setColor(Color.WHITE);
         hpBarRenderer.rect(20, Gdx.graphics.getHeight() - 40, 100, 20);
         hpBarRenderer.setColor(Color.RED);
         hpBarRenderer.rect(20, Gdx.graphics.getHeight() - 40, 100 * hpPercent, 20);
         hpBarRenderer.end();
+        xpBarRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        xpBarRenderer.setColor(Color.WHITE);
+        xpBarRenderer.rect(20, Gdx.graphics.getHeight() - 100, 100, 20);
+        xpBarRenderer.end();
+        xpBarRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        xpBarRenderer.setColor(Color.BLUE);
+        xpBarRenderer.rect(20, Gdx.graphics.getHeight() - 100, 100 * ((float) (game.xp) / (game.level * 20)), 20);
+        xpBarRenderer.end();
         font.setColor(Color.BLUE);
         font.getData().setScale(2);
         if (game.shieldActive) {
@@ -292,9 +333,11 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     }
 
     private void drawStill() {
-        font.draw(batch, "HP: " + game.hp + " / " + hero.maxHP, 20, Gdx.graphics.getHeight() - 50);
+        font.draw(batch, "HP: " + game.hp + " / " + game.maxHp, 20, Gdx.graphics.getHeight() - 50);
         font.draw(batch, "Kills: " + game.kills, Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 40);
         font.draw(batch, "Ammo: " + game.ammo + " / " + game.weapon.maxAmmo, Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 70);
+        font.draw(batch, "xp: " + (game.xp) + " / " + game.level * 20, 20, Gdx.graphics.getHeight() - 110);
+
         int remainingTime = Math.max(0, (int) (game.totalTime - game.time));
         int minutes = remainingTime / 60;
         int seconds = remainingTime % 60;
@@ -319,6 +362,10 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             batch.draw(runningPlayerTexture, game.x, game.y);
         else
             batch.draw(idlePlayerTexture, game.x, game.y);
+        if (game.isHit) {
+            batch.draw(hitTexture, game.x, game.y);
+            game.isHit = false;
+        }
         Texture currentWeaponTexture;
         if (weaponState == WeaponState.RELOADING) {
             currentWeaponTexture = weaponReloadTextures[currentReloadFrame];
@@ -326,22 +373,27 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             currentWeaponTexture = weaponIdleTexture;
         }
         batch.draw(currentWeaponTexture, game.x + 7, game.y + 7);
-        for (Bullet bullet : bullets) {
+        for (Bullet bullet : game.bullets) {
             batch.draw(bulletTexture, bullet.x, bullet.y, 8, 8);
         }
         for (org.example.Model.Enemy m : game.enemies) {
             if (m instanceof TentacleMonster)
-                m.render(batch, tentacleWalkAnimation);
+                m.render(batch, tentacleWalkAnimation, elimintationAnimation);
             else if (m instanceof EyeBat)
-                m.render(batch, eyebatAnimation);
+                m.render(batch, eyebatAnimation, elimintationAnimation);
             else
-                m.render(batch, eyebatAnimation);
+                m.render(batch, eyebatAnimation, elimintationAnimation);
         }
         for (Drop drop : game.drops) {
             drop.updateBounds();
-            drop.render(batch, dropTexture);
+            if (drop.textureID == 0)
+                drop.render(batch, elderDropTexture);
+            else if (drop.textureID == 1)
+                drop.render(batch, tentacleDropTexture);
+            else
+                drop.render(batch, eyebatDropTexture);
         }
-        for (Bullet b : eyebatBullets) {
+        for (Bullet b : game.eyebatBullets) {
             batch.draw(bulletTexture, b.x, b.y, 8, 8);
         }
         batch.end();
