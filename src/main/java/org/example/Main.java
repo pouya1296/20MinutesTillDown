@@ -13,6 +13,7 @@ import org.example.view.LanguageSelectionScreen;
 //TODO hint menu cheat codes
 
 public class Main {
+    public static String avatarPath;
     public static void main(String[] args){
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("20min");
@@ -20,7 +21,9 @@ public class Main {
         config.setWindowListener(new Lwjgl3WindowAdapter() {
             @Override
             public void filesDropped(String[] files) {
-                //TODO age khoda bekhad mishe
+                if(files.length > 0){
+                    avatarPath = files[0];
+                }
             }
         });
         config.setWindowedMode(2400, 1800);

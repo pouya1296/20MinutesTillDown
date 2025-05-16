@@ -17,6 +17,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.40.1.0")
     implementation("org.hibernate:hibernate-core:6.2.0.Final")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.danilopianini:gson-extras:0.2.0")
 
 }
 

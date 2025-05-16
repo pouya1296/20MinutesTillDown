@@ -61,6 +61,7 @@ public class User {
         keys.put("BOSS_CHEAT", Input.Keys.NUM_2);
         keys.put("LEVEL_CHEAT", Input.Keys.NUM_3);
         keys.put("HP_CHEAT", Input.Keys.NUM_4);
+        keys.put("IMMORTAL_CHEAT", Input.Keys.NUM_5);
 
     }
 

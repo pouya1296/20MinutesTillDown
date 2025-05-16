@@ -2,16 +2,32 @@ package org.example.controller;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.example.Model.Game;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+import org.example.Model.*;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class GameDataManager {
     private static final String FILE_PATH = "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\controller\\game.json";
-    private static final Gson gson = new Gson();
+    private static  Gson gson = new Gson();
+
+    static {
+
+        RuntimeTypeAdapterFactory<Enemy> enemyAdapterFactory = RuntimeTypeAdapterFactory
+                .of(Enemy.class, "saveType")
+                .registerSubtype(TentacleMonster.class, "TentacleMonster")
+                .registerSubtype(EyeBat.class, "EyeBat")
+                .registerSubtype(Elder.class, "Elder");
+
+        gson = new GsonBuilder()
+                .registerTypeAdapterFactory(enemyAdapterFactory)
+                .create();
+    }
 
     public static void saveGame(Game game) {
         List<Game> games = loadAllGames();

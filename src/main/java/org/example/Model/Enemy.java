@@ -1,15 +1,11 @@
 package org.example.Model;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import jakarta.persistence.Transient;
-
-import java.util.Iterator;
 
 public class Enemy {
+    protected transient String saveType;
     public float x;
     public float y;
     public String[] texturePath;
@@ -17,6 +13,10 @@ public class Enemy {
     public float stateTime = 0f;
     public String dropPath;
     public float stage;
+
+    public Enemy(){
+
+    }
 
     public Enemy(float x, float y, String[] texturePath, int hp, String dropPath) {
         this.x = x;

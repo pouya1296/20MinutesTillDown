@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -10,7 +11,9 @@ import com.badlogic.gdx.math.Vector3;
 import org.example.Model.*;
 import org.example.Model.enums.Ability;
 import org.example.Model.enums.Enemy;
+import org.example.view.AbilityMenu;
 import org.example.view.GameMenu;
+import org.example.view.PauseMenu;
 
 import java.util.Iterator;
 import java.util.List;
@@ -70,7 +73,7 @@ public class GameMenuController {
         return invincibleTimer;
     }
 
-    public static void bulletHandle(float delta, Game game, List<Bullet> bullets, Texture treeTexture, Animation<TextureRegion> tentacleWalkAnimation, Animation<TextureRegion> eyebatAnimation) {
+    public static void bulletHandle(float delta, Game game, List<Bullet> bullets, Texture treeTexture, Animation<TextureRegion> tentacleWalkAnimation, Animation<TextureRegion> eyebatAnimation, Sound deathSound) {
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
@@ -98,6 +101,7 @@ public class GameMenuController {
                             if (enemy.hp <= 0) {
                                 game.kills++;
                                 enemy.stage += delta;
+                                playSound(game, deathSound);
                             }
                             break;
                         }
@@ -112,6 +116,7 @@ public class GameMenuController {
                             if (enemy.hp <= 0) {
                                 game.kills++;
                                 enemy.stage += delta;
+                                playSound(game, deathSound);
                             }
                             break;
                         }
@@ -127,6 +132,7 @@ public class GameMenuController {
                                 game.kills++;
                                 game.shieldActive = false;
                                 enemy.stage += delta;
+                                playSound(game, deathSound);
                             }
                             break;
                         }
@@ -154,7 +160,7 @@ public class GameMenuController {
         }
     }
 
-    public static void eyeBatShoot(float delta, Game game, List<Bullet> eyebatBullets) {
+    public static void eyeBatShoot(float delta, Game game, List<Bullet> eyebatBullets, Sound hitSound) {
         Iterator<org.example.Model.Enemy> enemy = game.enemies.iterator();
         while (enemy.hasNext()) {
             org.example.Model.Enemy enemy1 = enemy.next();
@@ -180,6 +186,7 @@ public class GameMenuController {
                 if (game.invincibleTimer == 0f)
                     game.hp -= 1;
                 game.isHit = true;
+                playSound(game, hitSound);
                 ebbIt.remove();
             } else if (!b.active) {
                 ebbIt.remove();
@@ -254,7 +261,7 @@ public class GameMenuController {
         return eyebatSpawnTimer + delta;
     }
 
-    public static void playerEnemy(Game game, Animation<TextureRegion> tentacleWalkAnimation, Animation<TextureRegion> eyebatAnimation) {
+    public static void playerEnemy(Game game, Animation<TextureRegion> tentacleWalkAnimation, Animation<TextureRegion> eyebatAnimation, Sound hitSound) {
         Iterator<org.example.Model.Enemy> enemyIt = game.enemies.iterator();
         while (enemyIt.hasNext()) {
             org.example.Model.Enemy enemy = enemyIt.next();
@@ -264,6 +271,7 @@ public class GameMenuController {
                     if (game.invincibleTimer == 0f) {
                         game.invincibleTimer = 1f;
                         game.hp--;
+                        playSound(game, hitSound);
                     }
                     break;
                 }
@@ -273,6 +281,7 @@ public class GameMenuController {
                     if (game.invincibleTimer == 0f) {
                         game.invincibleTimer = 1f;
                         game.hp--;
+                        playSound(game, hitSound);
                     }
                     break;
                 }
@@ -282,6 +291,7 @@ public class GameMenuController {
                     if (game.invincibleTimer == 0f) {
                         game.invincibleTimer = 1f;
                         game.hp--;
+                        playSound(game, hitSound);
                     }
                     break;
                 }
@@ -308,32 +318,36 @@ public class GameMenuController {
                 Enemy.ELDER.hp));
     }
 
-    public static void playerShield(Game game, float saveX, float saveY) {
+    public static void playerShield(Game game, float saveX, float saveY, Sound hitSound) {
         if (game.shieldActive) {
             if (game.x - 5 < Gdx.graphics.getWidth() / 2 - game.shieldHalfWidth) {
                 game.x = saveX + 6;
                 game.y = saveY;
                 game.hp--;
+                playSound(game, hitSound);
             }
             if (game.x + 10 > Gdx.graphics.getWidth() / 2 + game.shieldHalfWidth) {
                 game.x = saveX - 6;
                 game.y = saveY;
                 game.hp--;
+                playSound(game, hitSound);
             }
             if (game.y - 5 < Gdx.graphics.getHeight() / 2 - game.shieldHalfHeight) {
                 game.x = saveX;
                 game.y = saveY + 6;
                 game.hp--;
+                playSound(game, hitSound);
             }
             if (game.y + 15 > Gdx.graphics.getHeight() / 2 + game.shieldHalfHeight) {
                 game.x = saveX;
                 game.y = saveY - 6;
                 game.hp--;
+                playSound(game, hitSound);
             }
         }
     }
 
-    public static void shieldHandle(Game game, float delta) {
+    public static void shieldHandle(Game game, float delta, Sound deathSound) {
         if (game.shieldActive) {
             game.shieldHalfWidth = Math.max(0, game.shieldHalfWidth - game.shieldShrinkSpeed * delta);
             game.shieldHalfHeight = Math.max(0, game.shieldHalfHeight - game.shieldShrinkSpeed * delta);
@@ -351,6 +365,7 @@ public class GameMenuController {
                     if (enemy instanceof Elder)
                         game.shieldActive = false;
                     enemy.stage += delta;
+                    playSound(game, deathSound);
                 }
             }
 
@@ -367,15 +382,17 @@ public class GameMenuController {
         return GameMenu.WeaponState.SHOOTING;
     }
 
-    public static void levelHandle(Game game) {
+    public static void levelHandle(Game game, Sound levelSound) {
         if (game.xp >= game.level * 20) {
-            addLevel(game);
+            addLevel(game, levelSound);
         }
     }
 
-    public static void addLevel(Game game) {
+    public static void addLevel(Game game, Sound levelSound) {
         game.xp = 0;
         game.level++;
+        playSound(game, levelSound);
+        ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new AbilityMenu(game));
     }
 
     public static void removeEnemyHandle(Game game, Texture elder, Texture tentacle, Texture eyebat) {
@@ -399,15 +416,19 @@ public class GameMenuController {
     }
 
     public static void vitalityHandle(Game game) {
-        game.maxHp = game.hero.maxHP + 1;
+        game.maxHp++;
+        game.hp = game.maxHp;
+        game.abilitiesQueue.remove(Ability.VITALITY);
     }
 
     public static void procreaseHandle(Game game) {
-        game.projectile = game.weapon.projectile + 1;
+        game.projectile++;
+        game.abilitiesQueue.remove(Ability.PROCREASE);
     }
 
     public static void ammoCreaseHandle(Game game) {
-        game.maxAmmo = game.weapon.maxAmmo + 5;
+        game.maxAmmo+= 5;
+        game.abilitiesQueue.remove(Ability.AMOCREASE);
     }
 
     public static void damagerHandle(Game game, float delta) {
@@ -417,7 +438,7 @@ public class GameMenuController {
         } else {
             game.damagerTimer = 0f;
             game.damage = game.weapon.damage;
-            game.abilities.remove(Ability.DAMAGER);
+            game.abilitiesQueue.remove(Ability.DAMAGER);
         }
     }
 
@@ -429,7 +450,31 @@ public class GameMenuController {
         else{
             game.speedyTimer = 0f;
             game.speed = game.hero.speed;
-            game.abilities.remove(Ability.SPEEDY);
+            game.abilitiesQueue.remove(Ability.SPEEDY);
         }
     }
+
+    public static void playSound(Game game, Sound sound) {
+        if(game.soundEffect){
+            sound.play(0.5f);
+        }
+    }
+
+    public static org.example.Model.Enemy findNearestEnemy(Game game) {
+        org.example.Model.Enemy nearest = null;
+        float minDistance = Float.MAX_VALUE;
+
+        for (org.example.Model.Enemy enemy : game.enemies) {
+            float dx = enemy.x - game.x;
+            float dy = enemy.y - game.y;
+            float distance = dx*dx + dy*dy;
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearest = enemy;
+            }
+        }
+        return nearest;
+    }
 }
+

@@ -37,21 +37,39 @@ public class HintMenu implements Screen {
         backgroundImage.setFillParent(true);
         stage.addActor(backgroundImage);
 
+
+        Table mainContainer = new Table();
+        mainContainer.setFillParent(true);
+        mainContainer.top().padTop(50);
+
+        Table leftTable = new Table();
+        Table rightTable = new Table();
+
+
         Label titleLabel = new Label(Language.GAME_INFO.languages[App.languageNumber], skin);
         titleLabel.setColor(Color.YELLOW);
         titleLabel.setFontScale(1.5f);
+        rightTable.add(titleLabel).padBottom(30).row();
 
-        Table table = new Table();
-        table.setFillParent(true);
-        table.center();
-        table.add(titleLabel).padBottom(20);
-        table.row();
 
-        addHeroInfo(table);
-        addWeaponInfo(table);
-        addGameKeys(table);
-        addAbilities(table);
-//        addCheatCodes(table);
+        addHeroInfo(rightTable);
+        addWeaponInfo(rightTable);
+        addGameKeys(rightTable);
+        addAbilities(leftTable);
+        addCheatCodes(leftTable);
+
+
+        mainContainer.add(leftTable)
+                .width(400)
+                .padLeft(50)
+                .padTop(10)
+                .top();
+
+        mainContainer.add(rightTable)
+                .expandX()
+                .pad(50)
+                .top();
+
 
         backButton = new TextButton(Language.BACK_TO_MAIN_MENU.languages[App.languageNumber], skin);
         backButton.addListener(new ClickListener() {
@@ -61,11 +79,60 @@ public class HintMenu implements Screen {
             }
         });
 
-        table.row();
-        table.add(backButton).size(300, 50).padTop(30);
+        Table buttonContainer = new Table();
+        buttonContainer.setFillParent(true);
+        buttonContainer.bottom().right().pad(30);
+        buttonContainer.add(backButton).size(500, 60);
 
-        stage.addActor(table);
+        stage.addActor(mainContainer);
+        stage.addActor(buttonContainer);
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void addCheatCodes(Table table) {
+
+        Label cheatTitle = new Label("Cheat Codes", skin);
+        cheatTitle.setColor(Color.RED);
+        cheatTitle.setFontScale(1.3f);
+        table.add(cheatTitle).padBottom(30).padLeft(500).left().row();
+
+
+        Map<String, String> cheatData = Map.of(
+                "TIME_CHEAT", "Add 60 seconds to game time",
+                "BOSS_CHEAT", "Spawn boss immediately",
+                "LEVEL_CHEAT", "Increase player level",
+                "HP_CHEAT", "+1 Max HP",
+                "IMMORTAL_CHEAT", "God mode activation"
+        );
+
+
+        for (Map.Entry<String, String> entry : cheatData.entrySet()) {
+            Table row = new Table();
+
+
+            Label keyLabel = new Label(
+                    "[" + Input.Keys.toString(App.currentUser.keys.get(entry.getKey())) + "]",
+                    skin
+            );
+            keyLabel.setColor(Color.GOLD);
+            keyLabel.setFontScale(1.1f);
+
+
+            Label descLabel = new Label(entry.getValue(), skin);
+            descLabel.setColor(Color.LIGHT_GRAY);
+            descLabel.setFontScale(0.9f);
+
+            row.add(keyLabel).width(80).padLeft(500).left();
+            row.add(descLabel).left();
+
+            table.add(row)
+                    .padBottom(15)
+                    .left()
+                    .row();
+        }
+
+
+        table.add().expand().fill();
     }
 
     private void addHeroInfo(Table table) {
@@ -111,12 +178,12 @@ public class HintMenu implements Screen {
         Label abilityTitle = new Label("Abilities:", skin);
         abilityTitle.setColor(Color.MAGENTA);
         table.row();
-        table.add(abilityTitle).padBottom(10);
+        table.add(abilityTitle).padBottom(10).row();
 
         for (Ability ability : Ability.values()) {
-            Label abilityLabel = new Label(ability.name + ": " + getAbilityDescription(ability), skin);
+            Label abilityLabel = new Label("                        "+ability.name + ": " + getAbilityDescription(ability), skin);
             table.row();
-            table.add(abilityLabel).padBottom(5);
+            table.add(abilityLabel).padBottom(5).padLeft(80).right().row();
         }
     }
 

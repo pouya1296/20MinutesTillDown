@@ -19,6 +19,7 @@ public class Game {
     public String username;
     public Map<String, Integer> keys = new HashMap<>();
     public ArrayList<Ability> abilities = new ArrayList<>();
+    public ArrayList<Ability> abilitiesQueue = new ArrayList<>();
     public org.example.Model.enums.Hero hero;
     public Weapon weapon;
     public float time;
@@ -59,8 +60,15 @@ public class Game {
     public float speedyTimer;
     public int damage;
     public int speed;
+    public int[][] map = new int[200][200];
+    public boolean immortal;
+    public boolean end;
+    public boolean autoAim;
 
     public Game(User user) {
+        this.autoAim = false;
+        this.end = false;
+        this.immortal = false;
         this.speedyTimer = 0f;
         this.damagerTimer = 0f;
         this.isHit = false;
@@ -78,7 +86,6 @@ public class Game {
         this.hero = user.hero;
         this.weapon = user.weapon;
         this.currentAbility = null;
-        isBlackWhite = false;
         this.totalTime = user.time;
         this.time = 0;
         this.kills = 0;
@@ -92,6 +99,22 @@ public class Game {
         this.xp = 0;
         this.elderSpawn = false;
         this.projectile = weapon.projectile;
+        this.maxAmmo = this.weapon.maxAmmo;
+        this.ammo = this.maxAmmo;
+        this.speed = hero.speed;
+        this.maxHp = hero.maxHP;
+        this.damage = this.weapon.damage;
+        for (int i = 0; i < 200; i++) {
+            for (int j = 0; j < 200; j++) {
+                map[i][j] = 0;
+            }
+        }
+        for (int i = 0; i < 70; i++) {
+            float x = 10f + (float) (Math.random() * 6400);
+            float y = 10f + (float) (Math.random() * 6400);
+            this.trees.add(new Tree(x, y, "C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\T_TreeMonster_0.png"));
+        }
+        this.isBlackWhite = user.grayScaleMode;
 //        blackAndWhiteShader = new ShaderProgram(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\blackandwhite.glsl"),
 //                Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\blackandwhite\\vertex.glsl"));
     }

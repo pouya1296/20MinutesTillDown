@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -11,8 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.example.Main;
 import org.example.Model.App;
 import org.example.Model.enums.Language;
 import org.example.controller.ChangeMenuController;
@@ -27,6 +30,8 @@ public class AvatarMenu implements Screen {
     private int selectedIndex = -1;
     private Texture backgroundTexture, currentAvatarTexture;
     private Image backgroundImage, currentAvatarImage;
+    private float checkTimer = 0;
+    private static final float CHECK_INTERVAL = 0.5f;
 
     @Override
     public void show() {
@@ -56,6 +61,7 @@ public class AvatarMenu implements Screen {
                     updateSelection();
                     App.currentUser.avatarPath = avatarPaths[index];
                     currentAvatarTexture = avatarTextures[index];
+                    currentAvatarImage.setDrawable(new TextureRegionDrawable(new TextureRegion(currentAvatarTexture)));
                 }
             });
         }
@@ -80,6 +86,7 @@ public class AvatarMenu implements Screen {
                 if (selectedAvatarPath != null) {
                     App.currentUser.avatarPath = selectedAvatarPath;
                     currentAvatarTexture = new Texture(Gdx.files.internal(selectedAvatarPath));
+                    currentAvatarImage.setDrawable(new TextureRegionDrawable(new TextureRegion(currentAvatarTexture)));
                 }
             }
         });
@@ -95,9 +102,9 @@ public class AvatarMenu implements Screen {
         currentAvatarImage.setSize(150, 150);
         Table buttonTable = new Table();
         buttonTable.center();
-        buttonTable.add(selectFileButton).size(250, 50).pad(10);
+        buttonTable.add(selectFileButton).size(500, 100).pad(10);
         buttonTable.row();
-        buttonTable.add(backButton).size(250, 50).pad(10);
+        buttonTable.add(backButton).size(500, 100).pad(10);
 
         mainTable.add(currentAvatarImage).size(150, 150).padBottom(20);
         mainTable.row();
@@ -116,10 +123,51 @@ public class AvatarMenu implements Screen {
 
     @Override
     public void render(float delta) {
+        checkTimer += delta;
+        if (checkTimer >= CHECK_INTERVAL) {
+            checkTimer = 0;
+            checkForDroppedFiles();
+        }
         ScreenUtils.clear(0, 0, 0, 1);
         stage.act(delta);
         stage.draw();
     }
+
+    private void checkForDroppedFiles() {
+        if (Main.avatarPath != null) {
+            String path = Main.avatarPath;
+            Main.avatarPath = null;
+
+            if (isValidImageFile(path)) {
+                try {
+
+                    if (currentAvatarTexture != null) {
+                        currentAvatarTexture.dispose();
+                    }
+
+
+                    currentAvatarTexture = new Texture(Gdx.files.absolute(path));
+                    currentAvatarImage.setDrawable(new TextureRegionDrawable(new TextureRegion(currentAvatarTexture)));
+                    App.currentUser.avatarPath = path;
+
+                } catch (Exception e) {
+                    Gdx.app.error("Avatar", "Error loading dropped file", e);
+                }
+            }
+        }
+    }
+
+    private boolean isValidImageFile(String path) {
+        String[] validExtensions = {".png", ".jpg", ".jpeg"};
+        String lowerPath = path.toLowerCase();
+        for (String ext : validExtensions) {
+            if (lowerPath.endsWith(ext)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     public void dispose() {
@@ -129,6 +177,9 @@ public class AvatarMenu implements Screen {
         currentAvatarTexture.dispose();
         for (Texture texture : avatarTextures) {
             texture.dispose();
+        }
+        if (currentAvatarTexture != null) {
+            currentAvatarTexture.dispose();
         }
     }
 

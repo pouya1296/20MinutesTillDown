@@ -93,7 +93,11 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 App.currentGame = GameDataManager.getLastGame(App.currentUser.username);
-                ChangeMenuController.changeMenu(MainMenu.this, new GameMenu(App.currentGame));
+                if(App.currentGame != null && !App.currentGame.end) {
+                    GameMenu gameMenu = new GameMenu(App.currentGame);
+                    App.currentGame.gameMenu = gameMenu;
+                    ChangeMenuController.changeMenu(MainMenu.this, gameMenu);
+                }
             }
         });
 
@@ -184,8 +188,8 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
                 ChangeMenuController.changeMenu(MainMenu.this, new HintMenu());
             } else if (index == 5) {
                 App.currentGame = GameDataManager.getLastGame(App.currentUser.username);
-                if(App.currentGame != null)
-                ChangeMenuController.changeMenu(MainMenu.this, App.currentGame.gameMenu);
+                if (App.currentGame != null)
+                    ChangeMenuController.changeMenu(MainMenu.this, App.currentGame.gameMenu);
             } else {
                 try {
                     DatabaseManager.updateUser(App.currentUser);

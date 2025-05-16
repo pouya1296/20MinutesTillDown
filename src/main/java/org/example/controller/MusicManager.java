@@ -6,7 +6,7 @@ public class MusicManager {
     private static Music backgroundMusic;
 
     public static void initialize() {
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\music\\sweet.mp3"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\music\\star.mp3"));
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.5f);
     }

@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Elder extends Enemy {
+    public Elder() {}
+
     public Elder(float x, float y, String[] texturePath, int hp) {
         super(x, y, texturePath, hp, org.example.Model.enums.Enemy.ELDER.texturePaths[1]);
+        this.saveType = "Elder";
     }
 
     @Override
