@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -50,9 +47,9 @@ public class GameMenu implements Menu, InputProcessor, Screen {
     public Sound levelSound;
     public Sound winSound;
     public Sound loseSound;
-
-
-
+    public transient ShapeRenderer lightRenderer;
+    public float lightRadius;
+    public Color lightColor;
     public enum WeaponState {IDLE, SHOOTING, RELOADING}
 
     private OrthographicCamera hudCamera;
@@ -126,6 +123,9 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         eyebatDropTexture = new Texture("C:\\Users\\ASUS\\IdeaProjects\\20min\\src\\main\\java\\org\\example\\view\\project assets\\Sprite\\BrainMonster_Em.png");
         loadShaders();
         loadSounds();
+        lightRenderer = new ShapeRenderer();
+        lightRadius = 160f;
+        lightColor = new Color(0.6f, 0.8f, 1, 0.25f);
     }
 
     public void endGame() {
@@ -163,7 +163,6 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             endGame();
         }
         if (Gdx.input.isKeyJustPressed(keys.get("PAUSE"))) {
-            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             //((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new PauseMenu());
             ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new PauseMenu());
         }
@@ -358,6 +357,8 @@ public class GameMenu implements Menu, InputProcessor, Screen {
             batch.setShader(grayscaleShader);
         }
         drawMobile();
+        batch.end();
+        drawLightEffect();
         hudCamera.update();
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
@@ -409,6 +410,25 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         }
         batch.setShader(null);
 
+    }
+
+    private void drawLightEffect() {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        lightRenderer.setProjectionMatrix(camera.combined);
+        lightRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+
+        float centerX = game.x + idlePlayerTexture.getWidth()/2f;
+        float centerY = game.y + idlePlayerTexture.getHeight()/2f;
+
+
+        lightRenderer.setColor(lightColor);
+        lightRenderer.circle(centerX, centerY, lightRadius);
+
+        lightRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     private void drawStill() {
@@ -475,7 +495,6 @@ public class GameMenu implements Menu, InputProcessor, Screen {
         for (Bullet b : game.eyebatBullets) {
             batch.draw(bulletTexture, b.x, b.y, 8, 8);
         }
-        batch.end();
     }
 
     @Override
