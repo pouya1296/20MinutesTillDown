@@ -143,19 +143,19 @@ public class MainMenu extends Game implements Menu, Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(preGameButton).size(400, 100).pad(10);
+        table.add(preGameButton).size(600, 100).pad(10);
         table.row();
-        table.add(settingsButton).size(400, 100).pad(10);
+        table.add(settingsButton).size(600, 100).pad(10);
         table.row();
-        table.add(profileButton).size(400, 100).pad(10);
+        table.add(profileButton).size(600, 100).pad(10);
         table.row();
-        table.add(scoreboardButton).size(400, 100).pad(10);
+        table.add(scoreboardButton).size(600, 100).pad(10);
         table.row();
-        table.add(hintButton).size(400, 100).pad(10);
+        table.add(hintButton).size(600, 100).pad(10);
         table.row();
-        table.add(continueButton).size(400, 100).pad(10);
+        table.add(continueButton).size(600, 100).pad(10);
         table.row();
-        table.add(exitButton).size(400, 100).pad(10);
+        table.add(exitButton).size(600, 100).pad(10);
         return table;
     }
 

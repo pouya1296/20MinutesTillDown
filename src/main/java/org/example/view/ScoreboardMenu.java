@@ -115,15 +115,15 @@ public class ScoreboardMenu implements Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(sortByScoreButton).size(400, 100).pad(10);
+        table.add(sortByScoreButton).size(600, 100).pad(10);
         table.row();
-        table.add(sortByUsernameButton).size(400, 100).pad(10);
+        table.add(sortByUsernameButton).size(600, 100).pad(10);
         table.row();
-        table.add(sortByKillsButton).size(400, 100).pad(10);
+        table.add(sortByKillsButton).size(600, 100).pad(10);
         table.row();
-        table.add(sortBySurvivalTimeButton).size(400, 100).pad(10);
+        table.add(sortBySurvivalTimeButton).size(600, 100).pad(10);
         table.row();
-        table.add(backButton).size(400, 100).pad(10);
+        table.add(backButton).size(600, 100).pad(10);
         return table;
     }
 

@@ -119,7 +119,11 @@ public class LoginMenu implements Menu, Screen, InputProcessor {
                     if (!passwordResponse.success) {
                         messageLabel.setText(passwordResponse.responseMessage);
                     } else {
-                        ;
+                        try {
+                            App.currentUser = DatabaseManager.getUser(usernameField.getText());
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
                         messageLabel.setText(Language.LOGGED_IN_SUCCESSFULLY.languages[App.languageNumber]);
                         ChangeMenuController.changeMenu(LoginMenu.this, new MainMenu());
                     }

@@ -45,15 +45,15 @@ public class PreGameMenu implements Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(heroMenuButton).size(400, 100).pad(10);
+        table.add(heroMenuButton).size(500, 100).pad(10);
         table.row();
-        table.add(weaponMenuButton).size(400, 100).pad(10);
+        table.add(weaponMenuButton).size(500, 100).pad(10);
         table.row();
-        table.add(timeMenuButton).size(400, 100).pad(10);
+        table.add(timeMenuButton).size(500, 100).pad(10);
         table.row();
-        table.add(newGameButton).size(400, 100).pad(10);
+        table.add(newGameButton).size(500, 100).pad(10);
         table.row();
-        table.add(backButton).size(400, 100).pad(10);
+        table.add(backButton).size(500, 100).pad(10);
 
         stage.addActor(table);
         updateSelection();

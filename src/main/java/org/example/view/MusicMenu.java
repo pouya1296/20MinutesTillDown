@@ -97,7 +97,7 @@ public class MusicMenu implements Screen, InputProcessor {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ChangeMenuController.changeMenu(MusicMenu.this, new MainMenu());
+                ChangeMenuController.changeMenu(MusicMenu.this, new SettingsMenu());
             }
         });
     }
@@ -118,21 +118,21 @@ public class MusicMenu implements Screen, InputProcessor {
         Table table = new Table();
         table.setFillParent(true);
         table.center();
-        table.add(track1Button).size(400, 100).pad(10);
+        table.add(track1Button).size(500, 100).pad(10);
         table.row();
-        table.add(track2Button).size(400, 100).pad(10);
+        table.add(track2Button).size(500, 100).pad(10);
         table.row();
-        table.add(track3Button).size(400, 100).pad(10);
+        table.add(track3Button).size(500, 100).pad(10);
         table.row();
-        table.add(track4Button).size(400, 100).pad(10);
+        table.add(track4Button).size(500, 100).pad(10);
         table.row();
-        table.add(track5Button).size(400, 100).pad(10);
+        table.add(track5Button).size(500, 100).pad(10);
         table.row();
-        table.add(track6Button).size(400, 100).pad(10);
+        table.add(track6Button).size(500, 100).pad(10);
         table.row();
-        table.add(track7Button).size(400, 100).pad(10);
+        table.add(track7Button).size(500, 100).pad(10);
         table.row();
-        table.add(backButton).size(400, 100).pad(10);
+        table.add(backButton).size(500, 100).pad(10);
         return table;
     }
 

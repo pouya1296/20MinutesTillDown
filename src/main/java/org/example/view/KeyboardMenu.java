@@ -41,10 +41,10 @@ public class KeyboardMenu implements Screen {
         table.setFillParent(true);
 
         for (Map.Entry<String, Integer> entry : keys.entrySet()) {
+            if(!entry.getKey().equals("TIME_CHEAT") && !entry.getKey().equals("BOSS_CHEAT") && !entry.getKey().equals("LEVEL_CHEAT") && !entry.getKey().equals("HP_CHEAT") && !entry.getKey().equals("IMMORTAL_CHEAT")) {
             Label actionLabel = new Label(entry.getKey(), skin);
             TextField keyField = new TextField(Input.Keys.toString(entry.getValue()), skin);
             keyField.setDisabled(true);
-
             TextButton changeButton = new TextButton(Language.CHANGE.languages[App.languageNumber], skin);
             changeButton.addListener(new ClickListener() {
                 @Override
@@ -80,8 +80,8 @@ public class KeyboardMenu implements Screen {
 
             table.add(actionLabel).pad(10);
             table.add(keyField).width(100).pad(10);
-            table.add(changeButton).size(100, 40).pad(10);
-            table.row();
+            table.add(changeButton).size(200, 40).pad(10);
+            table.row();}
         }
 
         backButton = new TextButton(Language.BACK_TO_SETTINGS.languages[App.languageNumber], skin);
@@ -93,7 +93,7 @@ public class KeyboardMenu implements Screen {
         });
 
         table.row();
-        table.add(backButton).size(400, 100).padTop(20);
+        table.add(backButton).size(600, 100).padBottom(100);
         stage.addActor(table);
 
         Gdx.input.setInputProcessor(stage);
